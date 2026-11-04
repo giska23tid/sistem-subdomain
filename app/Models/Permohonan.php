@@ -15,6 +15,7 @@ class Permohonan extends Model
 
     protected $casts = [
         'tanggal_diperiksa' => 'datetime',
+        'tanggal_surat_opd' => 'date',
     ];
 
     public function opd(): BelongsTo
@@ -40,5 +41,9 @@ class Permohonan extends Model
     public function subdomain(): HasOne
     {
         return $this->hasOne(Subdomain::class, 'permohonan_id');
+    }
+    public function suratTindakLanjut(): HasOne
+    {
+        return $this->hasOne(SuratTindakLanjut::class, 'permohonan_id');
     }
 }

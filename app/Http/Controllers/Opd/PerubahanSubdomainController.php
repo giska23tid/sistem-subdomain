@@ -63,11 +63,21 @@ class PerubahanSubdomainController extends Controller
                 'max:50',
                 'regex:/^[a-z0-9](?:[a-z0-9-]{0,48}[a-z0-9])?$/',
                 'different:subdomain_lama',
-
                 Rule::unique('subdomains', 'nama_subdomain'),
-
                 Rule::unique('permohonan_subdomains', 'nama_subdomain')
                     ->whereIn('status', ['diajukan', 'diterima']),
+            ],
+
+            'nomor_surat_opd' => [
+                'required',
+                'string',
+                'max:100',
+            ],
+
+            'tanggal_surat_opd' => [
+                'required',
+                'date',
+                'before_or_equal:today',
             ],
 
             'surat' => [
@@ -90,7 +100,6 @@ class PerubahanSubdomainController extends Controller
                 'mimes:pdf,jpg,jpeg,png',
                 'max:2048',
             ],
-
         ], [
             'subdomain_lama.required' =>
                 'Silakan pilih subdomain yang akan diubah.',
@@ -109,6 +118,21 @@ class PerubahanSubdomainController extends Controller
 
             'subdomain_baru.unique' =>
                 'Nama subdomain tersebut sudah digunakan atau sedang diajukan.',
+
+            'nomor_surat_opd.required' =>
+                'Nomor surat permohonan dari OPD wajib diisi.',
+
+            'nomor_surat_opd.max' =>
+                'Nomor surat maksimal 100 karakter.',
+
+            'tanggal_surat_opd.required' =>
+                'Tanggal surat permohonan dari OPD wajib diisi.',
+
+            'tanggal_surat_opd.date' =>
+                'Tanggal surat tidak valid.',
+
+            'tanggal_surat_opd.before_or_equal' =>
+                'Tanggal surat tidak boleh melebihi tanggal hari ini.',
 
             'surat.required' =>
                 'Surat permohonan perubahan nama subdomain wajib diunggah.',
@@ -163,6 +187,8 @@ class PerubahanSubdomainController extends Controller
                     'nama_subdomain' => strtolower(
                         $validated['subdomain_baru']
                     ),
+                    'nomor_surat_opd' => $validated['nomor_surat_opd'],
+                    'tanggal_surat_opd' => $validated['tanggal_surat_opd'],
                     'status' => 'diajukan',
                 ]);
 
@@ -175,7 +201,6 @@ class PerubahanSubdomainController extends Controller
 
                 // Menyimpan seluruh dokumen ke storage.
                 foreach ($dokumen as $field => $jenis) {
-
                     $file = $request->file($field);
 
                     $path = $file->store(
@@ -200,9 +225,7 @@ class PerubahanSubdomainController extends Controller
                     ]);
                 }
             });
-
         } catch (\Throwable $e) {
-
             // Menghapus file yang sudah terunggah
             // jika transaksi database gagal.
             foreach ($filePaths as $path) {
@@ -219,5 +242,5 @@ class PerubahanSubdomainController extends Controller
                 'success',
                 'Permohonan perubahan nama subdomain berhasil dikirim.'
             );
-        }
+    }
 }

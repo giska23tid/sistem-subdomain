@@ -419,6 +419,7 @@
             >
                 @csrf
 
+                <!-- Subdomain lama -->
                 <div class="form-group">
 
                     <label for="subdomainLama" class="form-label">
@@ -453,6 +454,7 @@
 
                 </div>
 
+                <!-- Subdomain baru -->
                 <div class="form-group">
 
                     <label for="subdomainBaru" class="form-label">
@@ -480,7 +482,7 @@
                     </div>
 
                     <span class="field-help">
-                        Masukkan nama baru tanpa akhiran .contoh.go.id.
+                        Masukkan nama baru tanpa akhiran .inhukab.go.id.
                         Gunakan huruf kecil, angka, atau tanda hubung.
                         Nama tidak boleh diawali atau diakhiri tanda hubung.
                     </span>
@@ -492,6 +494,54 @@
 
                 </div>
 
+                <!-- Nomor surat OPD -->
+                <div class="form-group">
+
+                    <label for="nomorSuratOpd" class="form-label">
+                        Nomor Surat Permohonan OPD
+                    </label>
+
+                    <input
+                        type="text"
+                        id="nomorSuratOpd"
+                        name="nomor_surat_opd"
+                        class="input-control"
+                        placeholder="Contoh: 800/DISDIKBUD/1404"
+                        maxlength="100"
+                        value="{{ old('nomor_surat_opd') }}"
+                        required
+                    >
+
+                    <span class="field-help">
+                        Masukkan nomor surat resmi yang diterbitkan oleh OPD.
+                    </span>
+
+                </div>
+
+                <!-- Tanggal surat OPD -->
+                <div class="form-group">
+
+                    <label for="tanggalSuratOpd" class="form-label">
+                        Tanggal Surat Permohonan OPD
+                    </label>
+
+                    <input
+                        type="date"
+                        id="tanggalSuratOpd"
+                        name="tanggal_surat_opd"
+                        class="input-control"
+                        max="{{ date('Y-m-d') }}"
+                        value="{{ old('tanggal_surat_opd') }}"
+                        required
+                    >
+
+                    <span class="field-help">
+                        Pilih tanggal yang tercantum pada surat permohonan OPD.
+                    </span>
+
+                </div>
+
+                <!-- Dokumen persyaratan -->
                 <div class="form-group">
 
                     <div class="document-heading">
@@ -605,6 +655,7 @@
 
                 </div>
 
+                <!-- Tombol -->
                 <div class="form-actions">
 
                     <button
@@ -625,8 +676,9 @@
                     </button>
 
                     <span class="action-note">
-                        Pastikan subdomain yang dipilih benar dan ketiga dokumen
-                        persyaratan sudah sesuai sebelum mengirim permohonan.
+                        Pastikan subdomain yang dipilih benar, data surat OPD
+                        sudah sesuai, dan ketiga dokumen persyaratan sudah lengkap
+                        sebelum mengirim permohonan.
                     </span>
 
                 </div>
@@ -642,8 +694,12 @@
         const ALLOWED_EXTENSIONS = ['pdf', 'jpg', 'jpeg', 'png'];
 
         const form = document.getElementById('changeForm');
+
         const oldDomainInput = document.getElementById('subdomainLama');
         const newDomainInput = document.getElementById('subdomainBaru');
+
+        const nomorSuratInput = document.getElementById('nomorSuratOpd');
+        const tanggalSuratInput = document.getElementById('tanggalSuratOpd');
 
         const previewDomain = document.getElementById('previewDomain');
         const uploadCounter = document.getElementById('uploadCounter');
@@ -721,7 +777,7 @@
             const newName = newDomainInput.value.trim().toLowerCase();
 
             if (newName && isValidDomainName(newName)) {
-                previewDomain.textContent = newName + '.contoh.go.id';
+                previewDomain.textContent = newName + '.inhukab.go.id';
             } else {
                 previewDomain.textContent = 'Belum diisi';
             }
@@ -731,11 +787,20 @@
             const oldName = oldDomainInput.value;
             const newName = newDomainInput.value.trim().toLowerCase();
 
+            const nomorSurat = nomorSuratInput.value.trim();
+            const tanggalSurat = tanggalSuratInput.value;
+
             const validOldDomain = oldName !== '';
 
             const validNewDomain =
                 isValidDomainName(newName) &&
                 newName !== oldName;
+
+            const validNomorSurat = nomorSurat !== '';
+
+            const validTanggalSurat =
+                tanggalSurat !== '' &&
+                tanggalSurat <= new Date().toLocaleDateString('en-CA');
 
             const validFileCount = fileInputs.filter(({ input }) => {
                 return input.files[0] &&
@@ -750,6 +815,8 @@
             submitButton.disabled = !(
                 validOldDomain &&
                 validNewDomain &&
+                validNomorSurat &&
+                validTanggalSurat &&
                 validFiles
             );
         }
@@ -762,6 +829,16 @@
         newDomainInput.addEventListener('input', function () {
             clearMessages();
             updatePreview();
+            updateFormState();
+        });
+
+        nomorSuratInput.addEventListener('input', function () {
+            clearMessages();
+            updateFormState();
+        });
+
+        tanggalSuratInput.addEventListener('change', function () {
+            clearMessages();
             updateFormState();
         });
 
@@ -832,6 +909,27 @@
                 );
 
                 newDomainInput.focus();
+                return;
+            }
+
+            if (!nomorSuratInput.value.trim()) {
+                event.preventDefault();
+                showError('Nomor surat permohonan OPD wajib diisi.');
+                nomorSuratInput.focus();
+                return;
+            }
+
+            if (!tanggalSuratInput.value) {
+                event.preventDefault();
+                showError('Tanggal surat permohonan OPD wajib diisi.');
+                tanggalSuratInput.focus();
+                return;
+            }
+
+            if (tanggalSuratInput.value > new Date().toLocaleDateString('en-CA')) {
+                event.preventDefault();
+                showError('Tanggal surat tidak boleh melebihi tanggal hari ini.');
+                tanggalSuratInput.focus();
                 return;
             }
 

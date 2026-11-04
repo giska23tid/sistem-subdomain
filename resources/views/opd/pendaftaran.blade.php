@@ -419,6 +419,38 @@
                     enctype="multipart/form-data">
                 @csrf
 
+                {{-- NOMOR DAN TANGGAL SURAT PERMOHONAN OPD --}}
+                <div class="form-group">
+                    <label for="nomor_surat_opd" class="form-label">
+                        Nomor Surat Permohonan OPD
+                    </label>
+
+                    <input
+                        type="text"
+                        id="nomor_surat_opd"
+                        name="nomor_surat_opd"
+                        class="input-control"
+                        placeholder="Contoh: 000.1.5/123/DISKOMINFO/2026"
+                        value="{{ old('nomor_surat_opd') }}"
+                        maxlength="100"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="tanggal_surat_opd" class="form-label">
+                        Tanggal Surat Permohonan OPD
+                    </label>
+
+                    <input
+                        type="date"
+                        id="tanggal_surat_opd"
+                        name="tanggal_surat_opd"
+                        class="input-control"
+                        value="{{ old('tanggal_surat_opd') }}"
+                        required
+                    >
+                </div>
                 {{-- NAMA SUBDOMAIN --}}
                 <div class="form-group">
 

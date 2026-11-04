@@ -19,6 +19,8 @@ use App\Http\Controllers\Petugas\DetailPerubahanController;
 use App\Http\Controllers\Petugas\SubdomainController;
 use App\Http\Controllers\Petugas\MonitoringController;
 use App\Http\Controllers\Opd\SubdomainOpdController;
+use App\Http\Controllers\Petugas\SuratTindakLanjutController;
+
 
 // ==================================================
 // LANDING PAGE
@@ -143,6 +145,18 @@ Route::middleware('auth')->group(function () {
         'index'
     ])->name('prototype.subdomain');
 
+    // DOWNLOAD SURAT TINDAK LANJUT OPD
+    Route::get('/prototype/opd/permohonan/{id}/surat', [
+        SuratTindakLanjutController::class,
+        'downloadOpd'
+    ])->name('opd.surat.download');
+
+    // Mengunduh surat oleh OPD
+    Route::get(
+        '/prototype/opd/surat/{id}/download',
+        [SuratTindakLanjutController::class, 'downloadOpd']
+    )->name('opd.surat.download');
+
 });
 
 
@@ -255,5 +269,35 @@ Route::middleware('auth')->group(function () {
         LaporanMonitoringController::class,
         'downloadUlang'
     ])->name('petugas.laporan.download');
+
+    // ==================================================
+    // SURAT TINDAK LANJUT PERMOHONAN
+    // ==================================================
+
+    // DOWNLOAD SURAT PENDAFTARAN
+    Route::get('/prototype/petugas/pendaftaran/{id}/surat', [
+        SuratTindakLanjutController::class,
+        'downloadPetugas'
+    ])->name('petugas.surat.pendaftaran');
+
+    // DOWNLOAD SURAT PERUBAHAN
+    Route::get('/prototype/petugas/perubahan/{id}/surat', [
+        SuratTindakLanjutController::class,
+        'downloadPetugas'
+    ])->name('petugas.surat.perubahan');
+
+    // SURAT TINDAK LANJUT
+
+    // Menerbitkan surat
+    Route::post(
+        '/prototype/petugas/surat/{id}/terbitkan',
+        [SuratTindakLanjutController::class, 'terbitkan']
+    )->name('petugas.surat.terbitkan');
+
+    // Mengunduh surat oleh Petugas
+    Route::get(
+        '/prototype/petugas/surat/{id}/download',
+        [SuratTindakLanjutController::class, 'downloadPetugas']
+    )->name('petugas.surat.download');
 
 });

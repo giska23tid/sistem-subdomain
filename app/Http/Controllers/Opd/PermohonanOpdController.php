@@ -35,36 +35,53 @@ class PermohonanOpdController extends Controller
                     ->whereIn('status', ['diajukan', 'diterima']),
             ],
 
+            'nomor_surat_opd' => [
+                'required',
+                'string',
+                'max:100',
+            ],
+
+            'tanggal_surat_opd' => [
+                'required',
+                'date',
+            ],
+
             'kegunaan' => [
                 'required',
                 'string',
-                'max:2000'
+                'max:2000',
             ],
 
             'surat' => [
                 'required',
                 'file',
                 'mimes:pdf,jpg,jpeg,png',
-                'max:2048'
+                'max:2048',
             ],
 
             'pengelola' => [
                 'required',
                 'file',
                 'mimes:pdf,jpg,jpeg,png',
-                'max:2048'
+                'max:2048',
             ],
 
             'asn' => [
                 'required',
                 'file',
                 'mimes:pdf,jpg,jpeg,png',
-                'max:2048'
+                'max:2048',
             ],
         ], [
             'subdomain.required' => 'Nama subdomain wajib diisi.',
             'subdomain.regex' => 'Nama subdomain hanya boleh menggunakan huruf kecil, angka, dan tanda hubung. Tidak boleh diawali atau diakhiri tanda hubung.',
             'subdomain.unique' => 'Nama subdomain tersebut sudah digunakan atau sedang diajukan.',
+
+            'nomor_surat_opd.required' => 'Nomor surat OPD wajib diisi.',
+            'nomor_surat_opd.max' => 'Nomor surat OPD maksimal 100 karakter.',
+
+            'tanggal_surat_opd.required' => 'Tanggal surat OPD wajib diisi.',
+            'tanggal_surat_opd.date' => 'Tanggal surat OPD tidak valid.',
 
             'kegunaan.required' => 'Kegunaan layanan wajib diisi.',
 
@@ -82,13 +99,14 @@ class PermohonanOpdController extends Controller
                 $user,
                 &$filePaths
             ) {
-
                 // Simpan data permohonan.
                 $permohonan = Permohonan::create([
                     'opd_id' => $user->opd_id,
                     'user_id' => $user->id,
                     'jenis_permohonan' => 'pendaftaran',
                     'nama_subdomain' => strtolower($validated['subdomain']),
+                    'nomor_surat_opd' => $validated['nomor_surat_opd'],
+                    'tanggal_surat_opd' => $validated['tanggal_surat_opd'],
                     'kegunaan' => $validated['kegunaan'],
                     'status' => 'diajukan',
                 ]);
@@ -102,7 +120,6 @@ class PermohonanOpdController extends Controller
 
                 // Simpan file dan data dokumen.
                 foreach ($dokumen as $field => $jenis) {
-
                     $file = $request->file($field);
 
                     $path = $file->store(
@@ -126,9 +143,7 @@ class PermohonanOpdController extends Controller
                     ]);
                 }
             });
-
         } catch (\Throwable $e) {
-
             // Hapus file jika transaksi database gagal.
             foreach ($filePaths as $path) {
                 Storage::disk('public')->delete($path);

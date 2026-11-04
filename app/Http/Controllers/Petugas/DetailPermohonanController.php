@@ -8,6 +8,7 @@ use App\Models\Subdomain;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class DetailPermohonanController extends Controller
 {
@@ -25,7 +26,8 @@ class DetailPermohonanController extends Controller
             'opd',
             'pengaju',
             'dokumens',
-            'pemutus'
+            'pemutus',
+            'subdomain',
         ])
         ->where('jenis_permohonan', 'pendaftaran')
         ->findOrFail($id);
@@ -36,42 +38,68 @@ class DetailPermohonanController extends Controller
     /**
      * Menerima permohonan dan membuat data subdomain.
      */
-    public function terima($id)
+    public function terima(Request $request, $id)
     {
         abort_unless(
             Auth::check() && Auth::user()->role === 'petugas',
             403
         );
 
-        DB::transaction(function () use ($id) {
-            $permohonan = Permohonan::where('jenis_permohonan', 'pendaftaran')
-                ->lockForUpdate()
-                ->findOrFail($id);
+        // Validasi IP Address/Server.
+        $validated = $request->validate([
+            'ip_address' => [
+                'required',
+                'string',
+                'ip',
+                'max:45',
+            ],
+        ], [
+            'ip_address.required' => 'IP Address/Server wajib diisi.',
+            'ip_address.ip' => 'Format IP Address tidak valid.',
+            'ip_address.max' => 'IP Address maksimal 45 karakter.',
+        ]);
+
+        DB::transaction(function () use ($id, $validated) {
+
+            $permohonan = Permohonan::where(
+                'jenis_permohonan',
+                'pendaftaran'
+            )
+            ->lockForUpdate()
+            ->findOrFail($id);
 
             if ($permohonan->status !== 'diajukan') {
-                abort(422, 'Permohonan ini sudah pernah diproses.');
+                throw ValidationException::withMessages([
+                    'permohonan' => 'Permohonan ini sudah pernah diproses.',
+                ]);
             }
+
+            // Pastikan nama subdomain belum terdaftar.
+            $namaSubdomain = strtolower($permohonan->nama_subdomain);
 
             $sudahAda = Subdomain::where(
                 'nama_subdomain',
-                $permohonan->nama_subdomain
+                $namaSubdomain
             )->exists();
 
             if ($sudahAda) {
-                throw new \RuntimeException(
-                    'Nama subdomain tersebut sudah terdaftar.'
-                );
+                throw ValidationException::withMessages([
+                    'permohonan' => 'Nama subdomain tersebut sudah terdaftar.',
+                ]);
             }
 
+            // Membuat data subdomain beserta IP Address/Server.
             Subdomain::create([
                 'opd_id' => $permohonan->opd_id,
                 'permohonan_id' => $permohonan->id,
-                'nama_subdomain' => $permohonan->nama_subdomain,
+                'nama_subdomain' => $namaSubdomain,
+                'ip_address' => $validated['ip_address'],
                 'status' => 'aktif',
                 'tanggal_aktif' => now()->toDateString(),
                 'keterangan' => $permohonan->kegunaan,
             ]);
 
+            // Memperbarui status permohonan.
             $permohonan->update([
                 'status' => 'diterima',
                 'petugas_id' => Auth::id(),
@@ -82,7 +110,10 @@ class DetailPermohonanController extends Controller
 
         return redirect()
             ->route('petugas.detail-permohonan', $id)
-            ->with('success', 'Permohonan berhasil diterima dan subdomain telah didaftarkan.');
+            ->with(
+                'success',
+                'Permohonan berhasil diterima dan data IP Address/Server telah disimpan.'
+            );
     }
 
     /**
@@ -96,14 +127,20 @@ class DetailPermohonanController extends Controller
         );
 
         $validated = $request->validate([
-            'catatan' => ['required', 'string', 'max:2000'],
+            'catatan' => [
+                'required',
+                'string',
+                'max:2000',
+            ],
         ], [
             'catatan.required' => 'Alasan penolakan wajib diisi.',
             'catatan.max' => 'Alasan penolakan maksimal 2000 karakter.',
         ]);
 
-        $permohonan = Permohonan::where('jenis_permohonan', 'pendaftaran')
-            ->findOrFail($id);
+        $permohonan = Permohonan::where(
+            'jenis_permohonan',
+            'pendaftaran'
+        )->findOrFail($id);
 
         if ($permohonan->status !== 'diajukan') {
             return back()->withErrors([

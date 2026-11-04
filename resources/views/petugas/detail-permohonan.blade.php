@@ -235,10 +235,9 @@
             margin-bottom: 8px;
         }
 
+        .form-group input,
         .form-group textarea {
             width: 100%;
-            min-height: 105px;
-            resize: vertical;
             border: 1px solid #dfe5ee;
             border-radius: 8px;
             padding: 12px;
@@ -247,8 +246,22 @@
             outline: none;
         }
 
+        .form-group input:focus,
         .form-group textarea:focus {
-            border-color: #2854a2;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+        }
+
+        .form-group textarea {
+            min-height: 105px;
+            resize: vertical;
+        }
+
+        .form-hint {
+            color: #8793a5;
+            font-size: 11px;
+            margin-top: 7px;
+            line-height: 1.6;
         }
 
         .error-text {
@@ -320,6 +333,15 @@
             padding: 18px 0;
         }
 
+        .button-download {
+            background: #2854a2;
+            color: white;
+        }
+
+        .button-download:hover {
+            background: #1d427f;
+        }
+
         @media (max-width: 1000px) {
             .main-content {
                 margin-left: 220px;
@@ -359,7 +381,9 @@
     <main class="main-content">
 
         <div class="breadcrumb">
-            <a href="{{ route('petugas.pendaftaran') }}">Permohonan Pendaftaran</a>
+            <a href="{{ route('petugas.pendaftaran') }}">
+                Permohonan Pendaftaran
+            </a>
             / Detail Permohonan
         </div>
 
@@ -369,6 +393,7 @@
             Periksa informasi dan dokumen persyaratan sebelum memberikan keputusan.
         </p>
 
+        {{-- NOTIFIKASI --}}
         @if (session('success'))
             <div class="alert alert-success">
                 <i class="bi bi-check-circle"></i>
@@ -399,7 +424,9 @@
 
                 <div class="detail-item">
                     <label>ID Permohonan</label>
-                    <p>PD-{{ str_pad($permohonan->id, 4, '0', STR_PAD_LEFT) }}</p>
+                    <p>
+                        PD-{{ str_pad($permohonan->id, 4, '0', STR_PAD_LEFT) }}
+                    </p>
                 </div>
 
                 <div class="detail-item">
@@ -437,6 +464,20 @@
                 </div>
 
                 <div class="detail-item">
+                    <label>Nomor Surat OPD</label>
+                    <p>{{ $permohonan->nomor_surat_opd ?? '-' }}</p>
+                </div>
+
+                <div class="detail-item">
+                    <label>Tanggal Surat OPD</label>
+                    <p>
+                        {{ $permohonan->tanggal_surat_opd
+                            ? $permohonan->tanggal_surat_opd->translatedFormat('d F Y')
+                            : '-' }}
+                    </p>
+                </div>
+
+                <div class="detail-item">
                     <label>Status Permohonan</label>
 
                     @if ($permohonan->status === 'diajukan')
@@ -448,11 +489,25 @@
                             <i class="bi bi-check-circle"></i> Diterima
                         </span>
                     @elseif ($permohonan->status === 'ditolak')
-                        <span class="status rejected">
-                            <i class="bi bi-x-circle"></i> Ditolak
-                        </span>
+
+                        <div class="decision-info">
+                            <i class="bi bi-info-circle"></i>
+                            Permohonan telah ditolak. Alasan penolakan sudah tercatat
+                            dan tidak dapat diproses kembali.
+                        </div>
+
                     @endif
                 </div>
+
+                {{-- IP ADDRESS DITAMPILKAN JIKA PERMOHONAN DITERIMA --}}
+                @if ($permohonan->status === 'diterima')
+                    <div class="detail-item">
+                        <label>IP Address / Server Subdomain</label>
+                        <p>
+                            {{ $permohonan->subdomain->ip_address ?? '-' }}
+                        </p>
+                    </div>
+                @endif
 
                 <div class="detail-item full">
                     <label>Kegunaan Layanan</label>
@@ -510,7 +565,10 @@
                 @foreach ($jenisDokumen as $jenis => $namaDokumen)
 
                     @php
-                        $dokumen = $permohonan->dokumens->firstWhere('jenis_dokumen', $jenis);
+                        $dokumen = $permohonan->dokumens->firstWhere(
+                            'jenis_dokumen',
+                            $jenis
+                        );
                     @endphp
 
                     <div class="document-item">
@@ -533,9 +591,9 @@
 
                         </div>
 
-                        @if ($dokumen)
+                        @if ($dokumen && $dokumen->path_file)
                             <a
-                                href="{{ asset('storage/' . $dokumen->path_file) }}"
+                                href="{{ asset('storage/' . ltrim($dokumen->path_file, '/')) }}"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 class="document-button"
@@ -545,6 +603,7 @@
                             </a>
                         @else
                             <span class="status rejected">
+                                <i class="bi bi-x-circle"></i>
                                 Tidak tersedia
                             </span>
                         @endif
@@ -571,6 +630,7 @@
                     Petugas dapat menerima atau menolak permohonan berdasarkan hasil pemeriksaan.
                 </p>
 
+                {{-- FORM PENERIMAAN --}}
                 <form
                     action="{{ route('petugas.permohonan.terima', $permohonan->id) }}"
                     method="POST"
@@ -579,12 +639,40 @@
                 >
                     @csrf
 
+                    <div class="form-group">
+                        <label for="ip_address">
+                            IP Address / Server Subdomain Baru
+                        </label>
+
+                        <input
+                            type="text"
+                            name="ip_address"
+                            id="ip_address"
+                            value="{{ old('ip_address') }}"
+                            placeholder="Contoh: 68.168.218.43"
+                            maxlength="45"
+                            required
+                        >
+
+                        @error('ip_address')
+                            <div class="error-text">
+                                {{ $message }}
+                            </div>
+                        @enderror
+
+                        <p class="form-hint">
+                            Masukkan alamat IP atau server yang telah ditetapkan
+                            untuk subdomain tersebut.
+                        </p>
+                    </div>
+
                     <button type="submit" class="button button-accept">
                         <i class="bi bi-check-circle"></i>
                         Terima Permohonan
                     </button>
                 </form>
 
+                {{-- FORM PENOLAKAN --}}
                 <form
                     action="{{ route('petugas.permohonan.tolak', $permohonan->id) }}"
                     method="POST"
@@ -604,7 +692,9 @@
                         >{{ old('catatan') }}</textarea>
 
                         @error('catatan')
-                            <div class="error-text">{{ $message }}</div>
+                            <div class="error-text">
+                                {{ $message }}
+                            </div>
                         @enderror
                     </div>
 
@@ -619,8 +709,8 @@
 
                 <div class="decision-info">
                     <i class="bi bi-check-circle"></i>
-                    Permohonan telah diterima. Data subdomain sudah tercatat
-                    dalam sistem dan tidak dapat diproses kembali.
+                    Permohonan telah diterima. Data subdomain dan IP Address/Server
+                    sudah tercatat dalam sistem dan tidak dapat diproses kembali.
                 </div>
 
             @elseif ($permohonan->status === 'ditolak')
@@ -633,6 +723,39 @@
 
             @endif
 
+            {{-- PENERBITAN SURAT TINDAK LANJUT --}}
+            @if (in_array($permohonan->status, ['diterima', 'ditolak']))
+
+                <div style="margin-top: 20px;">
+
+                    @if ($permohonan->suratTindakLanjut)
+
+                        <a href="{{ route('petugas.surat.download', $permohonan->suratTindakLanjut->id) }}"
+                            class="button button-download">
+                            <i class="bi bi-file-earmark-pdf"></i>
+                            Unduh Surat Tindak Lanjut
+                        </a>
+
+                    @else
+
+                        <form
+                            action="{{ route('petugas.surat.terbitkan', $permohonan->id) }}"
+                            method="POST"
+                            onsubmit="return confirm('Terbitkan surat tindak lanjut untuk permohonan ini?')"
+                        >
+                            @csrf
+
+                            <button type="submit" class="button button-download">
+                                <i class="bi bi-file-earmark-pdf"></i>
+                                Terbitkan Surat Tindak Lanjut
+                            </button>
+                        </form>
+
+                    @endif
+
+                </div>
+
+            @endif
         </section>
 
         <a

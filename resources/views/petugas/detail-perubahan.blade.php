@@ -322,6 +322,19 @@
             padding: 18px 0;
         }
 
+        .form-group input:focus {
+            border-color: #2854a2 !important;
+        }
+
+        .button-download {
+            background: #2854a2;
+            color: white;
+        }
+
+        .button-download:hover {
+            background: #1d427f;
+        }
+
         @media (max-width: 1000px) {
             .main-content {
                 margin-left: 220px;
@@ -452,12 +465,26 @@
 
                 <div class="detail-item">
                     <label>Subdomain Lama</label>
-                    <p>{{ $permohonan->subdomain_lama }}.contoh.go.id</p>
+                    <p>{{ $permohonan->subdomain_lama }}.inhukab.go.id</p>
                 </div>
 
                 <div class="detail-item">
                     <label>Subdomain Baru</label>
-                    <p>{{ $permohonan->nama_subdomain }}.contoh.go.id</p>
+                    <p>{{ $permohonan->nama_subdomain }}.inhukab.go.id</p>
+                </div>
+
+                <div class="detail-item">
+                    <label>Nomor Surat OPD</label>
+                    <p>{{ $permohonan->nomor_surat_opd ?? '-' }}</p>
+                </div>
+
+                <div class="detail-item">
+                    <label>Tanggal Surat OPD</label>
+                    <p>
+                        {{ $permohonan->tanggal_surat_opd
+                            ? $permohonan->tanggal_surat_opd->translatedFormat('d F Y')
+                            : '-' }}
+                    </p>
                 </div>
 
                 <div class="detail-item">
@@ -591,10 +618,49 @@
                 <form
                     action="{{ route('petugas.perubahan.terima', $permohonan->id) }}"
                     method="POST"
-                    onsubmit="return confirm('Apakah kamu yakin ingin menerima permohonan ini? Subdomain lama akan dinonaktifkan dan subdomain baru akan diaktifkan.')"
+                    onsubmit="return confirm('Apakah kamu yakin ingin menerima permohonan ini? Subdomain lama akan dinonaktifkan dan subdomain baru akan dicatat sebagai subdomain aktif.')"
                     style="margin-bottom: 20px;"
                 >
                     @csrf
+
+                    <div class="form-group">
+                        <label for="ip_address">
+                            IP Address / Server Subdomain Baru
+                        </label>
+
+                        <input
+                            type="text"
+                            name="ip_address"
+                            id="ip_address"
+                            value="{{ old('ip_address') }}"
+                            placeholder="Contoh: 68.168.218.43"
+                            maxlength="45"
+                            required
+                            style="
+                                width: 100%;
+                                border: 1px solid #dfe5ee;
+                                border-radius: 8px;
+                                padding: 12px;
+                                font-family: inherit;
+                                font-size: 12px;
+                                outline: none;
+                            "
+                        >
+
+                        @error('ip_address')
+                            <div class="error-text">{{ $message }}</div>
+                        @enderror
+
+                        <p style="
+                            color: #8793a5;
+                            font-size: 11px;
+                            margin-top: 7px;
+                            line-height: 1.6;
+                        ">
+                            Masukkan alamat IP atau server yang telah ditetapkan
+                            untuk subdomain baru.
+                        </p>
+                    </div>
 
                     <button type="submit" class="button button-accept">
                         <i class="bi bi-check-circle"></i>
@@ -637,7 +703,7 @@
                 <div class="decision-info">
                     <i class="bi bi-check-circle"></i>
                     Permohonan perubahan nama subdomain telah diterima.
-                    Subdomain lama telah dinonaktifkan dan subdomain baru telah diaktifkan.
+                    Subdomain lama telah dinonaktifkan dan subdomain baru telah dicatat sebagai subdomain aktif.
                 </div>
 
             @elseif ($permohonan->status === 'ditolak')
@@ -649,6 +715,56 @@
                 </div>
 
             @endif
+
+            @if (in_array($permohonan->status, ['diterima', 'ditolak']))
+                <div style="margin-top: 18px;">
+                    <a
+                        href="{{ route('petugas.surat.perubahan', $permohonan->id) }}"
+                        class="button button-download"
+                        target="_blank"
+                    >
+                        <i class="bi bi-file-earmark-pdf"></i>
+                        Unduh Surat Tindak Lanjut
+                    </a>
+                </div>
+            @endif
+
+            {{-- PENERBITAN SURAT TINDAK LANJUT --}}
+            @if (in_array($permohonan->status, ['diterima', 'ditolak']))
+
+                <div style="margin-top: 20px;">
+
+                    @if ($permohonan->suratTindakLanjut)
+
+                        <a
+                            href="{{ route('petugas.surat.download', $permohonan->suratTindakLanjut->id) }}"
+                            class="button button-download"
+                        >
+                            <i class="bi bi-file-earmark-pdf"></i>
+                            Unduh Surat Tindak Lanjut
+                        </a>
+
+                    @else
+
+                        <form
+                            action="{{ route('petugas.surat.terbitkan', $permohonan->id) }}"
+                            method="POST"
+                            onsubmit="return confirm('Terbitkan surat tindak lanjut untuk permohonan ini?')"
+                        >
+                            @csrf
+
+                            <button type="submit" class="button button-download">
+                                <i class="bi bi-file-earmark-pdf"></i>
+                                Terbitkan Surat Tindak Lanjut
+                            </button>
+                        </form>
+
+                    @endif
+
+                </div>
+
+            @endif
+        </section>
 
         </section>
 

@@ -33,14 +33,29 @@ class DetailPerubahanController extends Controller
     }
 
     // Menerima permohonan perubahan
-    public function terima($id)
+    public function terima(Request $request, $id)
     {
         abort_unless(
             Auth::check() && Auth::user()->role === 'petugas',
             403
         );
 
-        DB::transaction(function () use ($id) {
+        // Validasi IP Address/Server
+        $validated = $request->validate([
+            'ip_address' => [
+                'required',
+                'string',
+                'ip',
+                'max:45'
+            ],
+        ], [
+            'ip_address.required' => 'IP Address/Server wajib diisi.',
+            'ip_address.ip' => 'Format IP Address tidak valid.',
+            'ip_address.max' => 'IP Address maksimal 45 karakter.',
+        ]);
+
+        DB::transaction(function () use ($id, $validated) {
+
             $permohonan = Permohonan::where(
                 'jenis_permohonan',
                 'perubahan'
@@ -91,11 +106,12 @@ class DetailPerubahanController extends Controller
                 'keterangan' => 'Dinonaktifkan karena perubahan nama subdomain.'
             ]);
 
-            // Aktifkan subdomain baru
+            // Buat data subdomain baru beserta IP Address/Server
             Subdomain::create([
                 'opd_id' => $permohonan->opd_id,
                 'permohonan_id' => $permohonan->id,
                 'nama_subdomain' => $namaBaru,
+                'ip_address' => $validated['ip_address'],
                 'status' => 'aktif',
                 'tanggal_aktif' => now()->toDateString(),
                 'keterangan' => 'Subdomain baru hasil permohonan perubahan.'
@@ -112,7 +128,10 @@ class DetailPerubahanController extends Controller
 
         return redirect()
             ->route('petugas.detail-perubahan', $id)
-            ->with('success', 'Permohonan perubahan subdomain berhasil diterima.');
+            ->with(
+                'success',
+                'Permohonan perubahan subdomain berhasil diterima dan data IP Address/Server telah disimpan.'
+            );
     }
 
     // Menolak permohonan perubahan
