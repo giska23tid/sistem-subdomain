@@ -242,10 +242,9 @@
             margin-bottom: 8px;
         }
 
+        .form-group input,
         .form-group textarea {
             width: 100%;
-            min-height: 105px;
-            resize: vertical;
             border: 1px solid #dfe5ee;
             border-radius: 8px;
             padding: 12px;
@@ -254,8 +253,22 @@
             outline: none;
         }
 
+        .form-group input:focus,
         .form-group textarea:focus {
             border-color: #2854a2;
+            box-shadow: 0 0 0 3px rgba(40, 84, 162, 0.10);
+        }
+
+        .form-group textarea {
+            min-height: 105px;
+            resize: vertical;
+        }
+
+        .form-hint {
+            color: #8793a5;
+            font-size: 11px;
+            margin-top: 7px;
+            line-height: 1.6;
         }
 
         .error-text {
@@ -306,6 +319,15 @@
             background: #edf1f7;
         }
 
+        .button-download {
+            background: #2854a2;
+            color: white;
+        }
+
+        .button-download:hover {
+            background: #1d427f;
+        }
+
         .decision-info {
             background: #f3f6fb;
             border-radius: 8px;
@@ -320,19 +342,6 @@
             color: #9aa5b5;
             font-size: 11px;
             padding: 18px 0;
-        }
-
-        .form-group input:focus {
-            border-color: #2854a2 !important;
-        }
-
-        .button-download {
-            background: #2854a2;
-            color: white;
-        }
-
-        .button-download:hover {
-            background: #1d427f;
         }
 
         @media (max-width: 1000px) {
@@ -401,6 +410,7 @@
             </a>
         </div>
 
+        {{-- NOTIFIKASI --}}
         @if (session('success'))
             <div class="alert alert-success">
                 <i class="bi bi-check-circle"></i>
@@ -542,7 +552,6 @@
             <div class="document-list">
 
                 @php
-                    // Jenis dokumen disesuaikan dengan data di database
                     $jenisDokumen = [
                         'surat_permohonan' => 'Surat Permohonan Perubahan Nama Subdomain',
                         'surat_penunjukan_pengelola' => 'Surat Penunjukan Pengelola Subdomain',
@@ -553,7 +562,10 @@
                 @foreach ($jenisDokumen as $jenis => $namaDokumen)
 
                     @php
-                        $dokumen = $permohonan->dokumens->firstWhere('jenis_dokumen', $jenis);
+                        $dokumen = $permohonan->dokumens->firstWhere(
+                            'jenis_dokumen',
+                            $jenis
+                        );
                     @endphp
 
                     <div class="document-item">
@@ -615,6 +627,7 @@
                     Petugas dapat menerima atau menolak permohonan berdasarkan hasil pemeriksaan.
                 </p>
 
+                {{-- FORM PENERIMAAN --}}
                 <form
                     action="{{ route('petugas.perubahan.terima', $permohonan->id) }}"
                     method="POST"
@@ -636,27 +649,13 @@
                             placeholder="Contoh: 68.168.218.43"
                             maxlength="45"
                             required
-                            style="
-                                width: 100%;
-                                border: 1px solid #dfe5ee;
-                                border-radius: 8px;
-                                padding: 12px;
-                                font-family: inherit;
-                                font-size: 12px;
-                                outline: none;
-                            "
                         >
 
                         @error('ip_address')
                             <div class="error-text">{{ $message }}</div>
                         @enderror
 
-                        <p style="
-                            color: #8793a5;
-                            font-size: 11px;
-                            margin-top: 7px;
-                            line-height: 1.6;
-                        ">
+                        <p class="form-hint">
                             Masukkan alamat IP atau server yang telah ditetapkan
                             untuk subdomain baru.
                         </p>
@@ -668,6 +667,7 @@
                     </button>
                 </form>
 
+                {{-- FORM PENOLAKAN --}}
                 <form
                     action="{{ route('petugas.perubahan.tolak', $permohonan->id) }}"
                     method="POST"
@@ -703,7 +703,8 @@
                 <div class="decision-info">
                     <i class="bi bi-check-circle"></i>
                     Permohonan perubahan nama subdomain telah diterima.
-                    Subdomain lama telah dinonaktifkan dan subdomain baru telah dicatat sebagai subdomain aktif.
+                    Subdomain lama telah dinonaktifkan dan subdomain baru telah
+                    dicatat sebagai subdomain aktif.
                 </div>
 
             @elseif ($permohonan->status === 'ditolak')
@@ -716,21 +717,8 @@
 
             @endif
 
-            @if (in_array($permohonan->status, ['diterima', 'ditolak']))
-                <div style="margin-top: 18px;">
-                    <a
-                        href="{{ route('petugas.surat.perubahan', $permohonan->id) }}"
-                        class="button button-download"
-                        target="_blank"
-                    >
-                        <i class="bi bi-file-earmark-pdf"></i>
-                        Unduh Surat Tindak Lanjut
-                    </a>
-                </div>
-            @endif
-
-            {{-- PENERBITAN SURAT TINDAK LANJUT --}}
-            @if (in_array($permohonan->status, ['diterima', 'ditolak']))
+            {{-- UNDUH SURAT: HANYA UNTUK PERMOHONAN DITERIMA --}}
+            @if ($permohonan->status === 'diterima')
 
                 <div style="margin-top: 20px;">
 
@@ -746,25 +734,27 @@
 
                     @else
 
-                        <form
-                            action="{{ route('petugas.surat.terbitkan', $permohonan->id) }}"
-                            method="POST"
-                            onsubmit="return confirm('Terbitkan surat tindak lanjut untuk permohonan ini?')"
-                        >
-                            @csrf
-
-                            <button type="submit" class="button button-download">
-                                <i class="bi bi-file-earmark-pdf"></i>
-                                Terbitkan Surat Tindak Lanjut
-                            </button>
-                        </form>
+                        <div class="decision-info">
+                            <i class="bi bi-exclamation-circle"></i>
+                            Permohonan telah diterima, tetapi surat tindak lanjut
+                            belum ditemukan. Silakan periksa proses pembuatan surat.
+                        </div>
 
                     @endif
 
                 </div>
 
+            @elseif ($permohonan->status === 'ditolak')
+
+                <div style="margin-top: 20px;">
+                    <div class="decision-info">
+                        <i class="bi bi-info-circle"></i>
+                        Permohonan yang ditolak tidak diterbitkan surat tindak lanjut PDF.
+                        Alasan penolakan dapat dilihat pada informasi permohonan.
+                    </div>
+                </div>
+
             @endif
-        </section>
 
         </section>
 

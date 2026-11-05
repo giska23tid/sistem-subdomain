@@ -157,6 +157,16 @@ Route::middleware('auth')->group(function () {
         [SuratTindakLanjutController::class, 'downloadOpd']
     )->name('opd.surat.download');
 
+    Route::post(
+        '/prototype/opd/notifikasi/{id}/dibaca',
+        [DashboardOpdController::class, 'tandaiDibaca']
+    )->name('opd.notifikasi.dibaca');
+
+    Route::post(
+        '/prototype/opd/notifikasi/dibaca-semua',
+        [DashboardOpdController::class, 'tandaiSemuaDibaca']
+    )->name('opd.notifikasi.dibacaSemua');
+
 });
 
 
@@ -287,12 +297,6 @@ Route::middleware('auth')->group(function () {
     ])->name('petugas.surat.perubahan');
 
     // SURAT TINDAK LANJUT
-
-    // Menerbitkan surat
-    Route::post(
-        '/prototype/petugas/surat/{id}/terbitkan',
-        [SuratTindakLanjutController::class, 'terbitkan']
-    )->name('petugas.surat.terbitkan');
 
     // Mengunduh surat oleh Petugas
     Route::get(

@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
+use App\Notifications\StatusPermohonanNotification;
+use App\Services\SuratTindakLanjutService;
 
 class DetailPerubahanController extends Controller
 {
@@ -33,14 +35,17 @@ class DetailPerubahanController extends Controller
     }
 
     // Menerima permohonan perubahan
-    public function terima(Request $request, $id)
-    {
+    
+    public function terima(
+        Request $request,
+        SuratTindakLanjutService $suratService,
+        $id
+    ) {
         abort_unless(
             Auth::check() && Auth::user()->role === 'petugas',
             403
         );
 
-        // Validasi IP Address/Server
         $validated = $request->validate([
             'ip_address' => [
                 'required',
@@ -54,87 +59,123 @@ class DetailPerubahanController extends Controller
             'ip_address.max' => 'IP Address maksimal 45 karakter.',
         ]);
 
-        DB::transaction(function () use ($id, $validated) {
+        try {
+            $permohonan = DB::transaction(function () use (
+                $id,
+                $validated,
+                $suratService
+            ) {
+                $permohonan = Permohonan::where(
+                    'jenis_permohonan',
+                    'perubahan'
+                )
+                ->lockForUpdate()
+                ->findOrFail($id);
 
-            $permohonan = Permohonan::where(
-                'jenis_permohonan',
-                'perubahan'
-            )
-            ->lockForUpdate()
-            ->findOrFail($id);
+                if ($permohonan->status !== 'diajukan') {
+                    throw ValidationException::withMessages([
+                        'permohonan' => 'Permohonan ini sudah diproses.',
+                    ]);
+                }
 
-            if ($permohonan->status !== 'diajukan') {
-                throw ValidationException::withMessages([
-                    'permohonan' => 'Permohonan ini sudah diproses.'
+                // Periksa subdomain lama milik OPD.
+                $subdomainLama = Subdomain::where(
+                    'nama_subdomain',
+                    $permohonan->subdomain_lama
+                )
+                ->where('opd_id', $permohonan->opd_id)
+                ->where('status', 'aktif')
+                ->lockForUpdate()
+                ->first();
+
+                if (!$subdomainLama) {
+                    throw ValidationException::withMessages([
+                        'permohonan' => 'Subdomain lama tidak ditemukan atau sudah nonaktif.',
+                    ]);
+                }
+
+                // Pastikan nama subdomain baru belum digunakan.
+                $namaBaru = strtolower($permohonan->nama_subdomain);
+
+                $sudahDigunakan = Subdomain::where(
+                    'nama_subdomain',
+                    $namaBaru
+                )->exists();
+
+                if ($sudahDigunakan) {
+                    throw ValidationException::withMessages([
+                        'permohonan' => 'Nama subdomain baru sudah digunakan.',
+                    ]);
+                }
+
+                // Nonaktifkan subdomain lama.
+                $subdomainLama->update([
+                    'status' => 'nonaktif',
+                    'tanggal_nonaktif' => now()->toDateString(),
+                    'keterangan' => 'Dinonaktifkan karena perubahan nama subdomain.',
                 ]);
+
+                // Buat subdomain baru.
+                Subdomain::create([
+                    'opd_id' => $permohonan->opd_id,
+                    'permohonan_id' => $permohonan->id,
+                    'nama_subdomain' => $namaBaru,
+                    'ip_address' => $validated['ip_address'],
+                    'status' => 'aktif',
+                    'tanggal_aktif' => now()->toDateString(),
+                    'keterangan' => 'Subdomain baru hasil permohonan perubahan.',
+                ]);
+
+                // Perbarui status permohonan.
+                $permohonan->update([
+                    'status' => 'diterima',
+                    'petugas_id' => Auth::id(),
+                    'tanggal_diperiksa' => now(),
+                    'catatan' => null,
+                ]);
+
+                // Muat subdomain baru untuk kebutuhan surat.
+                $permohonan->load('subdomain');
+
+                // Terbitkan surat persetujuan otomatis.
+                $suratService->terbitkanPersetujuan($permohonan);
+
+                return $permohonan;
+            });
+
+            // Kirim notifikasi setelah transaksi berhasil.
+            $permohonan->load('pengaju', 'suratTindakLanjut');
+
+            if ($permohonan->pengaju) {
+                $permohonan->pengaju->notify(
+                    new StatusPermohonanNotification(
+                        $permohonan,
+                        $permohonan->suratTindakLanjut
+                    )
+                );
             }
 
-            // Periksa subdomain lama milik OPD yang bersangkutan
-            $subdomainLama = Subdomain::where(
-                'nama_subdomain',
-                $permohonan->subdomain_lama
-            )
-            ->where('opd_id', $permohonan->opd_id)
-            ->where('status', 'aktif')
-            ->lockForUpdate()
-            ->first();
+        } catch (ValidationException $e) {
+            throw $e;
+        } catch (\Throwable $e) {
+            report($e);
 
-            if (!$subdomainLama) {
-                throw ValidationException::withMessages([
-                    'permohonan' => 'Subdomain lama tidak ditemukan atau sudah nonaktif.'
-                ]);
-            }
-
-            // Pastikan nama subdomain baru belum digunakan
-            $namaBaru = strtolower($permohonan->nama_subdomain);
-
-            $sudahDigunakan = Subdomain::where(
-                'nama_subdomain',
-                $namaBaru
-            )->exists();
-
-            if ($sudahDigunakan) {
-                throw ValidationException::withMessages([
-                    'permohonan' => 'Nama subdomain baru sudah digunakan.'
-                ]);
-            }
-
-            // Nonaktifkan subdomain lama
-            $subdomainLama->update([
-                'status' => 'nonaktif',
-                'tanggal_nonaktif' => now()->toDateString(),
-                'keterangan' => 'Dinonaktifkan karena perubahan nama subdomain.'
+            return back()->withErrors([
+                'permohonan' => 'Permohonan perubahan belum berhasil diterima atau surat PDF gagal diterbitkan. Silakan periksa kembali.',
             ]);
-
-            // Buat data subdomain baru beserta IP Address/Server
-            Subdomain::create([
-                'opd_id' => $permohonan->opd_id,
-                'permohonan_id' => $permohonan->id,
-                'nama_subdomain' => $namaBaru,
-                'ip_address' => $validated['ip_address'],
-                'status' => 'aktif',
-                'tanggal_aktif' => now()->toDateString(),
-                'keterangan' => 'Subdomain baru hasil permohonan perubahan.'
-            ]);
-
-            // Perbarui status permohonan
-            $permohonan->update([
-                'status' => 'diterima',
-                'petugas_id' => Auth::id(),
-                'tanggal_diperiksa' => now(),
-                'catatan' => null
-            ]);
-        });
+        }
 
         return redirect()
             ->route('petugas.detail-perubahan', $id)
             ->with(
                 'success',
-                'Permohonan perubahan subdomain berhasil diterima dan data IP Address/Server telah disimpan.'
+                'Permohonan perubahan berhasil diterima, subdomain lama dinonaktifkan, surat PDF diterbitkan, dan notifikasi telah diproses.'
             );
     }
 
+
     // Menolak permohonan perubahan
+    
     public function tolak(Request $request, $id)
     {
         abort_unless(
@@ -143,32 +184,61 @@ class DetailPerubahanController extends Controller
         );
 
         $validated = $request->validate([
-            'catatan' => ['required', 'string', 'max:2000']
+            'catatan' => ['required', 'string', 'max:2000'],
         ], [
             'catatan.required' => 'Alasan penolakan wajib diisi.',
-            'catatan.max' => 'Alasan penolakan maksimal 2000 karakter.'
+            'catatan.max' => 'Alasan penolakan maksimal 2000 karakter.',
         ]);
 
-        $permohonan = Permohonan::where(
-            'jenis_permohonan',
-            'perubahan'
-        )->findOrFail($id);
+        try {
+            $permohonan = DB::transaction(function () use ($id, $validated) {
+                $permohonan = Permohonan::where(
+                    'jenis_permohonan',
+                    'perubahan'
+                )
+                ->lockForUpdate()
+                ->findOrFail($id);
 
-        if ($permohonan->status !== 'diajukan') {
+                if ($permohonan->status !== 'diajukan') {
+                    throw ValidationException::withMessages([
+                        'permohonan' => 'Permohonan ini sudah diproses.',
+                    ]);
+                }
+
+                $permohonan->update([
+                    'status' => 'ditolak',
+                    'petugas_id' => Auth::id(),
+                    'tanggal_diperiksa' => now(),
+                    'catatan' => $validated['catatan'],
+                ]);
+
+                return $permohonan;
+            });
+
+            // Kirim notifikasi setelah transaksi berhasil.
+            $permohonan->load('pengaju');
+
+            if ($permohonan->pengaju) {
+                $permohonan->pengaju->notify(
+                    new StatusPermohonanNotification($permohonan)
+                );
+            }
+
+        } catch (ValidationException $e) {
+            throw $e;
+        } catch (\Throwable $e) {
+            report($e);
+
             return back()->withErrors([
-                'permohonan' => 'Permohonan ini sudah diproses.'
+                'permohonan' => 'Permohonan berhasil diperiksa, tetapi notifikasi belum berhasil diproses.',
             ]);
         }
 
-        $permohonan->update([
-            'status' => 'ditolak',
-            'petugas_id' => Auth::id(),
-            'tanggal_diperiksa' => now(),
-            'catatan' => $validated['catatan']
-        ]);
-
         return redirect()
             ->route('petugas.detail-perubahan', $id)
-            ->with('success', 'Permohonan perubahan subdomain berhasil ditolak.');
+            ->with(
+                'success',
+                'Permohonan perubahan berhasil ditolak dan notifikasi telah diproses.'
+            );
     }
 }

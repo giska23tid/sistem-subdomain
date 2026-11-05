@@ -270,12 +270,6 @@
             margin-top: 6px;
         }
 
-        .decision-buttons {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
         .button {
             display: inline-flex;
             align-items: center;
@@ -317,6 +311,15 @@
             background: #e1e7f0;
         }
 
+        .button-download {
+            background: #2854a2;
+            color: white;
+        }
+
+        .button-download:hover {
+            background: #1d427f;
+        }
+
         .decision-info {
             background: #f3f6fb;
             border-radius: 8px;
@@ -331,15 +334,6 @@
             color: #9aa5b5;
             font-size: 11px;
             padding: 18px 0;
-        }
-
-        .button-download {
-            background: #2854a2;
-            color: white;
-        }
-
-        .button-download:hover {
-            background: #1d427f;
         }
 
         @media (max-width: 1000px) {
@@ -489,13 +483,11 @@
                             <i class="bi bi-check-circle"></i> Diterima
                         </span>
                     @elseif ($permohonan->status === 'ditolak')
-
                         <div class="decision-info">
                             <i class="bi bi-info-circle"></i>
                             Permohonan telah ditolak. Alasan penolakan sudah tercatat
                             dan tidak dapat diproses kembali.
                         </div>
-
                     @endif
                 </div>
 
@@ -723,39 +715,46 @@
 
             @endif
 
-            {{-- PENERBITAN SURAT TINDAK LANJUT --}}
-            @if (in_array($permohonan->status, ['diterima', 'ditolak']))
+            {{-- UNDUH SURAT TINDAK LANJUT --}}
+            {{-- Surat hanya tersedia untuk permohonan yang diterima --}}
+            @if ($permohonan->status === 'diterima')
 
                 <div style="margin-top: 20px;">
 
                     @if ($permohonan->suratTindakLanjut)
 
-                        <a href="{{ route('petugas.surat.download', $permohonan->suratTindakLanjut->id) }}"
-                            class="button button-download">
+                        <a
+                            href="{{ route('petugas.surat.download', $permohonan->suratTindakLanjut->id) }}"
+                            class="button button-download"
+                        >
                             <i class="bi bi-file-earmark-pdf"></i>
                             Unduh Surat Tindak Lanjut
                         </a>
 
                     @else
 
-                        <form
-                            action="{{ route('petugas.surat.terbitkan', $permohonan->id) }}"
-                            method="POST"
-                            onsubmit="return confirm('Terbitkan surat tindak lanjut untuk permohonan ini?')"
-                        >
-                            @csrf
-
-                            <button type="submit" class="button button-download">
-                                <i class="bi bi-file-earmark-pdf"></i>
-                                Terbitkan Surat Tindak Lanjut
-                            </button>
-                        </form>
+                        <div class="decision-info">
+                            <i class="bi bi-info-circle"></i>
+                            Permohonan telah diterima, tetapi surat tindak lanjut
+                            belum tersedia. Silakan periksa data subdomain dan proses
+                            penerbitan surat pada sistem.
+                        </div>
 
                     @endif
 
                 </div>
 
+            @elseif ($permohonan->status === 'ditolak')
+
+                <div class="decision-info" style="margin-top: 20px;">
+                    <i class="bi bi-info-circle"></i>
+                    Permohonan yang ditolak tidak memerlukan surat tindak lanjut.
+                    Informasi keputusan dan alasan penolakan dapat dilihat oleh OPD
+                    melalui dashboard.
+                </div>
+
             @endif
+
         </section>
 
         <a

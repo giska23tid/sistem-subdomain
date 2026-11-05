@@ -316,6 +316,85 @@
             color: #64748b;
         }
 
+        /* NOTIFIKASI */
+        .notification-list {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .notification-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 13px 5px;
+            border-bottom: 1px solid #edf0f5;
+        }
+
+        .notification-item:last-child {
+            border-bottom: none;
+        }
+
+        .notification-icon {
+            width: 34px;
+            height: 34px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            font-size: 15px;
+        }
+
+        .notification-icon.success {
+            color: #087d50;
+            background: #d8f5e7;
+        }
+
+        .notification-icon.danger {
+            color: #b72e35;
+            background: #fbdcdd;
+        }
+
+        .notification-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .notification-content h3 {
+            font-size: 11px;
+            color: #10264a;
+            margin-bottom: 5px;
+        }
+
+        .notification-content p {
+            font-size: 10px;
+            color: #64748b;
+            line-height: 1.6;
+            overflow-wrap: anywhere;
+        }
+
+        .notification-date {
+            display: block;
+            margin-top: 5px;
+            font-size: 9px;
+            color: #94a3b8;
+        }
+
+        .notification-count {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 19px;
+            height: 19px;
+            padding: 0 6px;
+            margin-left: 5px;
+            border-radius: 20px;
+            background: #fbdcdd;
+            color: #b72e35;
+            font-size: 10px;
+            font-weight: bold;
+        }
+
         /* TABLET DAN LAPTOP KECIL */
         @media (max-width: 1000px) {
             .main-content {
@@ -573,7 +652,129 @@
         </a>
 
     </section>
+    
+        
+    {{-- NOTIFIKASI OPD --}}
+    <section class="panel" id="notifikasi">
 
+        <div class="panel-header">
+            <h2>
+                Notifikasi
+
+                @if ($jumlahNotifikasiBelumDibaca > 0)
+                    <span class="notification-count">
+                        {{ $jumlahNotifikasiBelumDibaca }}
+                    </span>
+                @endif
+            </h2>
+
+            @if ($jumlahNotifikasiBelumDibaca > 0)
+                <form
+                    action="{{ route('opd.notifikasi.dibacaSemua') }}"
+                    method="POST"
+                >
+                    @csrf
+
+                    <button type="submit" class="btn btn-outline">
+                        Tandai semua dibaca
+                    </button>
+                </form>
+            @endif
+        </div>
+
+        {{-- PESAN BERHASIL --}}
+        @if (session('success'))
+            <p style="color: #087d50; font-size: 10px; margin-bottom: 10px;">
+                <i class="bi bi-check-circle"></i>
+                {{ session('success') }}
+            </p>
+        @endif
+
+        <div class="notification-list">
+
+            @forelse ($notifikasiTerbaru as $notifikasi)
+
+                @php
+                    $data = $notifikasi->data;
+                    $diterima = ($data['status'] ?? '') === 'diterima';
+                @endphp
+
+                <div class="notification-item">
+
+                    <div class="notification-icon {{ $diterima ? 'success' : 'danger' }}">
+                        <i class="bi {{ $diterima ? 'bi-check-circle-fill' : 'bi-exclamation-circle-fill' }}"></i>
+                    </div>
+
+                    <div class="notification-content">
+
+                        <h3>
+                            {{ $diterima ? 'Permohonan Diterima' : 'Informasi Penolakan Permohonan' }}
+
+                            @if (!$notifikasi->read_at)
+                                <span class="badge pending">Baru</span>
+                            @else
+                                <span class="badge active-status">Sudah dibaca</span>
+                            @endif
+                        </h3>
+
+                        <p>
+                            {{ $data['pesan'] ?? 'Terdapat pembaruan status permohonan Anda.' }}
+                        </p>
+
+                        <p>
+                            <strong>Subdomain:</strong>
+                            {{ $data['nama_subdomain'] ?? '-' }}
+                        </p>
+
+                        @if (($data['status'] ?? '') === 'ditolak')
+                            <p>
+                                <strong>Alasan penolakan:</strong>
+                                {{ $data['catatan'] ?? 'Tidak ada alasan yang dicantumkan.' }}
+                            </p>
+                        @endif
+
+                        @if ($diterima)
+                            <p>
+                                Surat tindak lanjut dapat diunduh melalui halaman permohonan Anda.
+                            </p>
+                        @endif
+
+                        <span class="notification-date">
+                            {{ $notifikasi->created_at?->format('d M Y, H:i') }}
+                        </span>
+
+                        @if (!$notifikasi->read_at)
+                            <form
+                                action="{{ route('opd.notifikasi.dibaca', $notifikasi->id) }}"
+                                method="POST"
+                                style="margin-top: 8px;"
+                            >
+                                @csrf
+
+                                <button type="submit" class="btn btn-outline">
+                                    Tandai sudah dibaca
+                                </button>
+                            </form>
+                        @endif
+
+                    </div>
+
+                </div>
+
+            @empty
+
+                <div class="empty-state">
+                    <i class="bi bi-bell" style="font-size: 24px;"></i>
+                    <p style="margin-top: 8px;">
+                        Belum ada notifikasi.
+                    </p>
+                </div>
+
+            @endforelse
+
+        </div>
+
+    </section>
 
         {{-- TABEL PERMOHONAN TERBARU --}}
         <section class="panel" id="permohonan">

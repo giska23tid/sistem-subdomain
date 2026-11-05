@@ -53,6 +53,15 @@ class DashboardOpdController extends Controller
             ->orderByDesc('created_at')
             ->get();
 
+        // Lima notifikasi terbaru milik OPD yang login
+        $notifikasiTerbaru = $user->notifications()
+            ->latest()
+            ->take(5)
+            ->get();
+
+        // Jumlah notifikasi yang belum dibaca
+        $jumlahNotifikasiBelumDibaca = $user->unreadNotifications()->count();
+
         return view('opd.dashboard', compact(
             'totalPendaftaran',
             'totalPerubahan',
@@ -60,7 +69,36 @@ class DashboardOpdController extends Controller
             'totalDiterima',
             'totalDitolak',
             'permohonanTerbaru',
-            'subdomains'
+            'subdomains',
+            'notifikasiTerbaru',
+            'jumlahNotifikasiBelumDibaca'
         ));
     }
+
+    public function tandaiDibaca(Request $request, string $id)
+    {
+        $user = $request->user();
+
+        abort_unless($user && $user->role === 'opd', 403);
+
+        $notifikasi = $user->notifications()
+            ->where('id', $id)
+            ->firstOrFail();
+
+        $notifikasi->markAsRead();
+
+        return back()->with('success', 'Notifikasi berhasil ditandai sudah dibaca.');
+    }
+
+    public function tandaiSemuaDibaca(Request $request)
+    {
+        $user = $request->user();
+
+        abort_unless($user && $user->role === 'opd', 403);
+
+        $user->unreadNotifications->markAsRead();
+
+        return back()->with('success', 'Semua notifikasi berhasil ditandai sudah dibaca.');
+    }
+
 }
