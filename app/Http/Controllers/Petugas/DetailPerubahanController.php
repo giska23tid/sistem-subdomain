@@ -14,7 +14,9 @@ use App\Services\SuratTindakLanjutService;
 
 class DetailPerubahanController extends Controller
 {
-    // Menampilkan detail permohonan perubahan
+    /**
+     * Menampilkan detail permohonan perubahan.
+     */
     public function show($id)
     {
         abort_unless(
@@ -26,16 +28,19 @@ class DetailPerubahanController extends Controller
             'opd',
             'pengaju',
             'dokumens',
-            'pemutus'
+            'pemutus',
+            'subdomain',
+            'suratTindakLanjut',
         ])
-        ->where('jenis_permohonan', 'perubahan')
-        ->findOrFail($id);
+            ->where('jenis_permohonan', 'perubahan')
+            ->findOrFail($id);
 
         return view('petugas.detail-perubahan', compact('permohonan'));
     }
 
-    // Menerima permohonan perubahan
-    
+    /**
+     * Menerima permohonan perubahan nama subdomain.
+     */
     public function terima(
         Request $request,
         SuratTindakLanjutService $suratService,
@@ -51,7 +56,7 @@ class DetailPerubahanController extends Controller
                 'required',
                 'string',
                 'ip',
-                'max:45'
+                'max:45',
             ],
         ], [
             'ip_address.required' => 'IP Address/Server wajib diisi.',
@@ -69,8 +74,8 @@ class DetailPerubahanController extends Controller
                     'jenis_permohonan',
                     'perubahan'
                 )
-                ->lockForUpdate()
-                ->findOrFail($id);
+                    ->lockForUpdate()
+                    ->findOrFail($id);
 
                 if ($permohonan->status !== 'diajukan') {
                     throw ValidationException::withMessages([
@@ -78,15 +83,15 @@ class DetailPerubahanController extends Controller
                     ]);
                 }
 
-                // Periksa subdomain lama milik OPD.
+                // Memeriksa subdomain lama milik OPD.
                 $subdomainLama = Subdomain::where(
                     'nama_subdomain',
                     $permohonan->subdomain_lama
                 )
-                ->where('opd_id', $permohonan->opd_id)
-                ->where('status', 'aktif')
-                ->lockForUpdate()
-                ->first();
+                    ->where('opd_id', $permohonan->opd_id)
+                    ->where('status', 'aktif')
+                    ->lockForUpdate()
+                    ->first();
 
                 if (!$subdomainLama) {
                     throw ValidationException::withMessages([
@@ -94,7 +99,7 @@ class DetailPerubahanController extends Controller
                     ]);
                 }
 
-                // Pastikan nama subdomain baru belum digunakan.
+                // Memastikan nama subdomain baru belum digunakan.
                 $namaBaru = strtolower($permohonan->nama_subdomain);
 
                 $sudahDigunakan = Subdomain::where(
@@ -108,14 +113,14 @@ class DetailPerubahanController extends Controller
                     ]);
                 }
 
-                // Nonaktifkan subdomain lama.
+                // Menonaktifkan subdomain lama.
                 $subdomainLama->update([
                     'status' => 'nonaktif',
                     'tanggal_nonaktif' => now()->toDateString(),
                     'keterangan' => 'Dinonaktifkan karena perubahan nama subdomain.',
                 ]);
 
-                // Buat subdomain baru.
+                // Membuat subdomain baru.
                 Subdomain::create([
                     'opd_id' => $permohonan->opd_id,
                     'permohonan_id' => $permohonan->id,
@@ -126,7 +131,7 @@ class DetailPerubahanController extends Controller
                     'keterangan' => 'Subdomain baru hasil permohonan perubahan.',
                 ]);
 
-                // Perbarui status permohonan.
+                // Memperbarui status permohonan.
                 $permohonan->update([
                     'status' => 'diterima',
                     'petugas_id' => Auth::id(),
@@ -134,18 +139,29 @@ class DetailPerubahanController extends Controller
                     'catatan' => null,
                 ]);
 
-                // Muat subdomain baru untuk kebutuhan surat.
+                // Memuat data subdomain baru untuk kebutuhan surat.
                 $permohonan->load('subdomain');
 
-                // Terbitkan surat persetujuan otomatis.
+                // Menerbitkan surat persetujuan secara otomatis.
                 $suratService->terbitkanPersetujuan($permohonan);
 
                 return $permohonan;
             });
 
-            // Kirim notifikasi setelah transaksi berhasil.
-            $permohonan->load('pengaju', 'suratTindakLanjut');
+            // Memuat data pemohon dan surat setelah transaksi berhasil.
+            $permohonan->load([
+                'pengaju',
+                'suratTindakLanjut',
+            ]);
 
+            // Memastikan surat sudah tersedia sebelum notifikasi dikirim.
+            if (!$permohonan->suratTindakLanjut) {
+                throw new \RuntimeException(
+                    'Data surat tindak lanjut belum ditemukan.'
+                );
+            }
+
+            // Mengirim notifikasi kepada OPD.
             if ($permohonan->pengaju) {
                 $permohonan->pengaju->notify(
                     new StatusPermohonanNotification(
@@ -173,9 +189,9 @@ class DetailPerubahanController extends Controller
             );
     }
 
-
-    // Menolak permohonan perubahan
-    
+    /**
+     * Menolak permohonan perubahan dengan alasan.
+     */
     public function tolak(Request $request, $id)
     {
         abort_unless(
@@ -191,13 +207,16 @@ class DetailPerubahanController extends Controller
         ]);
 
         try {
-            $permohonan = DB::transaction(function () use ($id, $validated) {
+            $permohonan = DB::transaction(function () use (
+                $id,
+                $validated
+            ) {
                 $permohonan = Permohonan::where(
                     'jenis_permohonan',
                     'perubahan'
                 )
-                ->lockForUpdate()
-                ->findOrFail($id);
+                    ->lockForUpdate()
+                    ->findOrFail($id);
 
                 if ($permohonan->status !== 'diajukan') {
                     throw ValidationException::withMessages([
@@ -215,9 +234,10 @@ class DetailPerubahanController extends Controller
                 return $permohonan;
             });
 
-            // Kirim notifikasi setelah transaksi berhasil.
+            // Memuat data pemohon.
             $permohonan->load('pengaju');
 
+            // Mengirim notifikasi penolakan kepada OPD.
             if ($permohonan->pengaju) {
                 $permohonan->pengaju->notify(
                     new StatusPermohonanNotification($permohonan)

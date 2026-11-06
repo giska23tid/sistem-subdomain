@@ -73,12 +73,13 @@ class StatusPermohonanNotification extends Notification
         return $mail;
     }
 
-    public function toArray(object $notifiable): array
+   public function toArray(object $notifiable): array
     {
         $permohonan = $this->permohonan;
 
         return [
             'permohonan_id' => $permohonan->id,
+            'surat_id' => $this->surat?->id,
             'jenis_permohonan' => $permohonan->jenis_permohonan,
             'nama_subdomain' => $permohonan->nama_subdomain,
             'status' => $permohonan->status,

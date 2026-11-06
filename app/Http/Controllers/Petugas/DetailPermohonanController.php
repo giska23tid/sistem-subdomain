@@ -30,9 +30,10 @@ class DetailPermohonanController extends Controller
             'dokumens',
             'pemutus',
             'subdomain',
+            'suratTindakLanjut',
         ])
-        ->where('jenis_permohonan', 'pendaftaran')
-        ->findOrFail($id);
+            ->where('jenis_permohonan', 'pendaftaran')
+            ->findOrFail($id);
 
         return view('petugas.detail-permohonan', compact('permohonan'));
     }
@@ -40,7 +41,6 @@ class DetailPermohonanController extends Controller
     /**
      * Menerima permohonan dan membuat data subdomain.
      */
-    
     public function terima(
         Request $request,
         SuratTindakLanjutService $suratService,
@@ -69,8 +69,8 @@ class DetailPermohonanController extends Controller
                     'jenis_permohonan',
                     'pendaftaran'
                 )
-                ->lockForUpdate()
-                ->findOrFail($id);
+                    ->lockForUpdate()
+                    ->findOrFail($id);
 
                 if ($permohonan->status !== 'diajukan') {
                     throw ValidationException::withMessages([
@@ -80,12 +80,18 @@ class DetailPermohonanController extends Controller
 
                 $namaSubdomain = strtolower($permohonan->nama_subdomain);
 
-                if (Subdomain::where('nama_subdomain', $namaSubdomain)->exists()) {
+                if (
+                    Subdomain::where(
+                        'nama_subdomain',
+                        $namaSubdomain
+                    )->exists()
+                ) {
                     throw ValidationException::withMessages([
                         'permohonan' => 'Nama subdomain tersebut sudah terdaftar.',
                     ]);
                 }
 
+                // Membuat data subdomain baru.
                 Subdomain::create([
                     'opd_id' => $permohonan->opd_id,
                     'permohonan_id' => $permohonan->id,
@@ -96,6 +102,7 @@ class DetailPermohonanController extends Controller
                     'keterangan' => $permohonan->kegunaan,
                 ]);
 
+                // Memperbarui status permohonan.
                 $permohonan->update([
                     'status' => 'diterima',
                     'petugas_id' => Auth::id(),
@@ -103,18 +110,29 @@ class DetailPermohonanController extends Controller
                     'catatan' => null,
                 ]);
 
-                // Muat data subdomain terbaru.
+                // Memuat data subdomain terbaru.
                 $permohonan->load('subdomain');
 
-                // Terbitkan surat persetujuan secara otomatis.
+                // Menerbitkan surat persetujuan secara otomatis.
                 $suratService->terbitkanPersetujuan($permohonan);
 
                 return $permohonan;
             });
 
-            // Kirim notifikasi setelah transaksi berhasil.
-            $permohonan->load('pengaju', 'suratTindakLanjut');
+            // Memuat data pemohon dan surat setelah transaksi berhasil.
+            $permohonan->load([
+                'pengaju',
+                'suratTindakLanjut',
+            ]);
 
+            // Pastikan surat sudah tersedia sebelum notifikasi dikirim.
+            if (!$permohonan->suratTindakLanjut) {
+                throw new \RuntimeException(
+                    'Data surat tindak lanjut belum ditemukan.'
+                );
+            }
+
+            // Mengirim notifikasi kepada OPD.
             if ($permohonan->pengaju) {
                 $permohonan->pengaju->notify(
                     new StatusPermohonanNotification(
@@ -145,7 +163,6 @@ class DetailPermohonanController extends Controller
     /**
      * Menolak permohonan dengan alasan.
      */
- 
     public function tolak(Request $request, $id)
     {
         abort_unless(
@@ -161,13 +178,16 @@ class DetailPermohonanController extends Controller
         ]);
 
         try {
-            $permohonan = DB::transaction(function () use ($id, $validated) {
+            $permohonan = DB::transaction(function () use (
+                $id,
+                $validated
+            ) {
                 $permohonan = Permohonan::where(
                     'jenis_permohonan',
                     'pendaftaran'
                 )
-                ->lockForUpdate()
-                ->findOrFail($id);
+                    ->lockForUpdate()
+                    ->findOrFail($id);
 
                 if ($permohonan->status !== 'diajukan') {
                     throw ValidationException::withMessages([
@@ -185,8 +205,10 @@ class DetailPermohonanController extends Controller
                 return $permohonan;
             });
 
+            // Memuat data pemohon.
             $permohonan->load('pengaju');
 
+            // Mengirim notifikasi penolakan kepada OPD.
             if ($permohonan->pengaju) {
                 $permohonan->pengaju->notify(
                     new StatusPermohonanNotification($permohonan)
@@ -205,6 +227,9 @@ class DetailPermohonanController extends Controller
 
         return redirect()
             ->route('petugas.detail-permohonan', $id)
-            ->with('success', 'Permohonan berhasil ditolak dan notifikasi telah diproses.');
+            ->with(
+                'success',
+                'Permohonan berhasil ditolak dan notifikasi telah diproses.'
+            );
     }
 }

@@ -506,6 +506,31 @@
             }
         }
 
+        .btn-download-surat {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            margin-top: 9px;
+            padding: 8px 12px;
+            border: 1px solid #087d50;
+            border-radius: 6px;
+            background: #087d50;
+            color: white;
+            font-size: 10px;
+            text-decoration: none;
+            transition: background 0.2s ease;
+        }
+
+        .btn-download-surat:hover {
+            background: #066640;
+            color: white;
+        }
+
+        .btn-download-surat i {
+            font-size: 12px;
+        }
+
         .mobile-header {
             display: none;
         }
@@ -733,9 +758,21 @@
                             </p>
                         @endif
 
-                        @if ($diterima)
-                            <p>
-                                Surat tindak lanjut dapat diunduh melalui halaman permohonan Anda.
+                        @if (
+                            $diterima &&
+                            !empty($data['surat_id'])
+                        )
+                            <a
+                                href="{{ route('opd.surat.download', $data['surat_id']) }}"
+                                class="btn-download-surat"
+                            >
+                                <i class="bi bi-file-earmark-pdf-fill"></i>
+                                Unduh Surat Tindak Lanjut
+                            </a>
+                        @elseif ($diterima)
+                            <p style="margin-top: 8px; color: #64748b;">
+                                <i class="bi bi-info-circle"></i>
+                                Surat tindak lanjut belum tersedia.
                             </p>
                         @endif
 
