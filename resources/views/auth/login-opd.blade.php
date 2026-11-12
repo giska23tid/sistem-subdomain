@@ -4,14 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Login OPD - Diskominfotik</title>
+    <title>Login OPD | Sistem Informasi Subdomain</title>
 
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: 'Segoe UI', Arial, sans-serif;
         }
 
         body {
@@ -19,388 +19,298 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 24px;
-            background: #f3f6fb;
-            color: #152b4d;
-            font-family: Arial, sans-serif;
-        }
-
-        .register-link {
-            margin-top: 20px;
-            color: #778397;
-            font-size: 12px;
-            text-align: center;
-        }
-
-        .register-link a {
-            color: #2854a2;
-            font-weight: bold;
-            text-decoration: none;
-        }
-
-        .register-link a:hover {
-            text-decoration: underline;
+            padding: 25px;
+            background: #f1f5f9;
         }
 
         .login-container {
             width: 100%;
-            max-width: 900px;
-            min-height: 490px;
+            max-width: 1000px;
+            min-height: 570px;
             display: grid;
             grid-template-columns: 1fr 1fr;
+            background: white;
+            border-radius: 20px;
             overflow: hidden;
-            background: #ffffff;
-            border-radius: 18px;
-            box-shadow: 0 12px 40px rgba(21, 43, 77, 0.10);
+            box-shadow: 0 12px 40px rgba(15, 23, 42, 0.10);
         }
 
-        /* Panel kiri */
-        .welcome-panel {
+        .login-left {
+            background: linear-gradient(145deg, #123b65, #1769a6);
+            color: white;
+            padding: 55px 45px;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            padding: 42px;
-            background: #152b4d;
-            color: #ffffff;
         }
 
         .logo {
-            width: 54px;
-            height: 54px;
+            width: 65px;
+            height: 65px;
+            border-radius: 15px;
+            background: rgba(255,255,255,0.15);
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 26px;
-            border-radius: 13px;
-            background: #ffffff;
-            color: #152b4d;
-            font-size: 27px;
-            font-weight: bold;
+            font-size: 28px;
+            margin-bottom: 30px;
         }
 
-        .welcome-panel h1 {
-            margin-bottom: 14px;
-            font-size: 26px;
+        .login-left h1 {
+            font-size: 29px;
             line-height: 1.4;
+            margin-bottom: 18px;
         }
 
-        .welcome-panel p {
-            color: #d4deed;
-            font-size: 14px;
+        .login-left p {
+            color: #dbeafe;
             line-height: 1.8;
+            font-size: 14px;
         }
 
-        .welcome-label {
-            margin-top: 28px;
-            padding: 10px 14px;
-            width: fit-content;
-            border: 1px solid rgba(255, 255, 255, 0.25);
-            border-radius: 8px;
-            color: #ffffff;
+        .left-footer {
+            margin-top: 55px;
             font-size: 12px;
+            color: #cbdff2;
         }
 
-        /* Panel kanan */
-        .form-panel {
+        .login-right {
+            padding: 60px 50px;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            padding: 42px;
         }
 
-        .form-panel h2 {
+        .login-right h2 {
+            color: #163b60;
+            font-size: 27px;
             margin-bottom: 10px;
-            font-size: 25px;
         }
 
-        .description {
-            margin-bottom: 27px;
-            color: #778397;
-            font-size: 13px;
-            line-height: 1.8;
+        .subtitle {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 32px;
+            line-height: 1.6;
         }
 
-        .form-group {
-            margin-bottom: 19px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 13px;
-            font-weight: bold;
-        }
-
-        .input-wrapper {
-            position: relative;
-        }
-
-        .form-group input {
-            width: 100%;
-            height: 46px;
-            padding: 0 13px;
-            border: 1px solid #dce4ef;
+        .success {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+            padding: 12px;
             border-radius: 8px;
-            outline: none;
-            background: #ffffff;
-            color: #152b4d;
-            font-family: Arial, sans-serif;
             font-size: 13px;
-            transition: border-color 0.2s, box-shadow 0.2s;
+            margin-bottom: 20px;
         }
 
-        .form-group input:focus {
-            border-color: #2854a2;
-            box-shadow: 0 0 0 3px rgba(40, 84, 162, 0.09);
+        .error-box {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            margin-bottom: 20px;
         }
 
-        .form-group input::placeholder {
-            color: #a2adbd;
+        .field {
+            margin-bottom: 21px;
         }
 
-        .password-input {
-            padding-right: 90px !important;
+        .field label {
+            display: block;
+            color: #334155;
+            font-weight: 600;
+            font-size: 13px;
+            margin-bottom: 9px;
         }
 
-        .toggle-password {
-            position: absolute;
-            top: 50%;
-            right: 12px;
-            transform: translateY(-50%);
-            border: none;
-            background: transparent;
-            color: #2854a2;
-            font-size: 11px;
-            font-weight: bold;
-            cursor: pointer;
+        .field input {
+            width: 100%;
+            padding: 13px 15px;
+            border: 1px solid #cbd5e1;
+            border-radius: 9px;
+            outline: none;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+
+        .field input:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.10);
+        }
+
+        .error {
+            color: #dc2626;
+            font-size: 12px;
+            margin-top: 6px;
         }
 
         .login-button {
             width: 100%;
-            height: 46px;
-            margin-top: 5px;
+            padding: 14px;
+            background: #1769a6;
             border: none;
-            border-radius: 8px;
-            background: #2854a2;
-            color: #ffffff;
-            font-size: 14px;
-            font-weight: bold;
+            border-radius: 9px;
+            color: white;
+            font-size: 15px;
+            font-weight: 600;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: 0.2s;
+            margin-top: 5px;
         }
 
         .login-button:hover {
-            background: #1e4388;
+            background: #123b65;
         }
 
-        .error-message {
-            margin-top: 7px;
-            color: #c0392b;
-            font-size: 12px;
-        }
-
-        .notice {
-            margin-top: 18px;
-            padding: 12px;
-            border-radius: 8px;
-            background: #f1f5fb;
-            color: #65748b;
-            font-size: 11px;
-            line-height: 1.7;
-        }
-
-        .back-link {
-            display: block;
-            margin-top: 21px;
-            color: #2854a2;
-            font-size: 12px;
+        .register-link {
             text-align: center;
+            margin-top: 25px;
+            font-size: 13px;
+            color: #64748b;
+        }
+
+        .register-link a,
+        .back-link {
+            color: #1769a6;
+            font-weight: 600;
             text-decoration: none;
         }
 
+        .register-link a:hover,
         .back-link:hover {
             text-decoration: underline;
         }
 
-        .footer {
-            margin-top: 25px;
-            color: #8a94a5;
-            font-size: 10px;
-            line-height: 1.7;
+        .back-link {
+            display: block;
             text-align: center;
+            margin-top: 17px;
+            font-size: 13px;
         }
 
-        @media (max-width: 650px) {
-            body {
-                padding: 16px;
-            }
-
+        @media (max-width: 750px) {
             .login-container {
-                max-width: 430px;
                 grid-template-columns: 1fr;
             }
 
-            .welcome-panel {
-                padding: 28px;
+            .login-left {
+                padding: 35px 30px;
             }
 
-            .logo {
-                margin-bottom: 16px;
+            .login-left h1 {
+                font-size: 23px;
             }
 
-            .welcome-panel h1 {
-                font-size: 22px;
+            .left-footer {
+                margin-top: 25px;
             }
 
-            .welcome-label {
-                margin-top: 18px;
-            }
-
-            .form-panel {
-                padding: 30px 24px;
+            .login-right {
+                padding: 40px 30px;
             }
         }
     </style>
 </head>
 
 <body>
-    <main class="login-container">
 
-        <!-- Panel informasi -->
-        <section class="welcome-panel">
-            <div class="logo">D</div>
+<div class="login-container">
 
-            <h1>
-                Diskominfotik<br>
-                Kabupaten Indragiri Hulu
-            </h1>
+    <!-- BAGIAN KIRI -->
+    <div class="login-left">
 
-            <p>
-                Sistem Informasi Pengelolaan Permohonan
-                dan Monitoring Subdomain Perangkat Daerah.
-            </p>
+        <div class="logo">🏢</div>
 
-            <div class="welcome-label">
-                Portal Pengguna OPD
+        <h1>Sistem Informasi Pengelolaan Permohonan dan Monitoring Subdomain</h1>
+
+        <p>
+            Selamat datang di portal Perangkat Daerah.
+            Silakan masuk menggunakan akun yang telah
+            didaftarkan untuk mengelola permohonan subdomain.
+        </p>
+
+        <div class="left-footer">
+            Dinas Komunikasi, Informatika dan Statistik
+        </div>
+
+    </div>
+
+    <!-- BAGIAN KANAN -->
+    <div class="login-right">
+
+        <h2>Login OPD</h2>
+
+        <p class="subtitle">
+            Masukkan email dan password akun OPD untuk melanjutkan.
+        </p>
+
+        <!-- NOTIFIKASI REGISTRASI -->
+        @if (session('success'))
+            <div class="success">
+                {{ session('success') }}
             </div>
-        </section>
+        @endif
 
-        <!-- Form login OPD -->
-        <section class="form-panel">
-            <h2>Login OPD</h2>
+        <!-- NOTIFIKASI KESALAHAN -->
+        @if ($errors->any())
+            <div class="error-box">
+                @foreach ($errors->all() as $error)
+                    <div>{{ $error }}</div>
+                @endforeach
+            </div>
+        @endif
 
-            <p class="description">
-                Silakan masuk menggunakan akun Perangkat Daerah
-                untuk mengakses layanan pengelolaan subdomain.
-            </p>
+        <form action="{{ route('login.opd.submit') }}" method="POST">
+            @csrf
 
-            @if (session('success'))
-                <div style="margin-bottom: 16px; padding: 12px; border-radius: 8px; background: #e8f5e9; color: #256b36; font-size: 12px; line-height: 1.6;">
-                    {{ session('success') }}
-                </div>
-            @endif
+            <div class="field">
+                <label for="email">Email</label>
 
-            @if ($errors->any())
-                <div class="error-message" role="alert" style="margin-bottom: 12px;">
-                    {{ $errors->first() }}
-                </div>
-            @endif
-
-            <form action="{{ route('login.opd.submit') }}" method="POST">
-                @csrf
-
-                <div class="form-group">
-                    <label for="email">Email</label>
-
-                    <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        value="{{ old('email') }}"
-                        placeholder="Masukkan email"
-                        maxlength="255"
-                        autocomplete="username"
-                        required
-                        autofocus
-                    >
-
-                    @error('email')
-                        <div class="error-message">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <div class="form-group">
-                    <label for="password">Password</label>
-
-                    <div class="input-wrapper">
-                        <input
-                            type="password"
-                            id="password"
-                            name="password"
-                            class="password-input"
-                            placeholder="Masukkan password"
-                            autocomplete="current-password"
-                            required
-                        >
-
-                        <button
-                            type="button"
-                            class="toggle-password"
-                            id="togglePassword"
-                            aria-label="Tampilkan password"
-                        >
-                            Lihat
-                        </button>
-                    </div>
-
-                    @error('password')
-                        <div class="error-message">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <button type="submit" class="login-button">
-                    Masuk
-                </button>
-            </form>
-
-            <div class="register-link">
-                Belum punya akun?
-                <a href="{{ route('register.opd') }}">Daftar di sini</a>
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    value="{{ old('email') }}"
+                    placeholder="Masukkan email OPD"
+                    autocomplete="email"
+                    required
+                >
             </div>
 
-            <div class="notice">
-                <strong>Informasi:</strong>
-                Silakan gunakan email dan password yang telah
-                terdaftar pada sistem.
+            <div class="field">
+                <label for="password">Password</label>
+
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="Masukkan password"
+                    autocomplete="current-password"
+                    required
+                >
             </div>
 
-            <a href="{{ route('pilih-login') }}" class="back-link">
-                &larr; Kembali ke pilihan login
-            </a>
+            <button type="submit" class="login-button">
+                Masuk ke Dashboard
+            </button>
 
-            <div class="footer">
-                Diskominfotik Kabupaten Indragiri Hulu<br>
-                Sistem Pengelolaan Subdomain Perangkat Daerah
-            </div>
-        </section>
+        </form>
 
-    </main>
+        <div class="register-link">
+            Belum memiliki akun?
+            <a href="{{ route('register.opd') }}">Daftar OPD</a>
+        </div>
 
-    <script>
-        const passwordInput = document.getElementById('password');
-        const togglePassword = document.getElementById('togglePassword');
+        <a href="{{ route('pilih-login') }}" class="back-link">
+            ← Kembali ke halaman utama
+        </a>
 
-        togglePassword.addEventListener('click', function () {
-            const isPassword = passwordInput.type === 'password';
+    </div>
 
-            passwordInput.type = isPassword ? 'text' : 'password';
-            togglePassword.textContent = isPassword ? 'Sembunyikan' : 'Lihat';
+</div>
 
-            togglePassword.setAttribute(
-                'aria-label',
-                isPassword ? 'Sembunyikan password' : 'Tampilkan password'
-            );
-        });
-    </script>
 </body>
 </html>

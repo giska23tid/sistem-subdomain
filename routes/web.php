@@ -54,6 +54,7 @@ Route::post('/login/petugas', [AuthController::class, 'loginPetugas'])
     ->name('login.petugas.submit');
 
 
+
 // ==================================================
 // REGISTER
 // ==================================================
@@ -66,32 +67,18 @@ Route::get('/register/petugas', function () {
     return view('auth.register-petugas');
 })->name('register.petugas');
 
-Route::post('/register/petugas', function (Request $request) {
-    $request->validate([
-        'nama' => ['required', 'string', 'max:150'],
-        'nip' => ['required', 'string', 'max:30'],
-        'username' => ['required', 'string', 'max:100'],
-        'password' => ['required', 'string', 'min:8', 'confirmed'],
-    ]);
+// Registrasi Petugas
+// Registrasi Petugas
+Route::post('/register/petugas', [
+    AuthController::class,
+    'registerPetugas'
+])->name('register.petugas.submit');
 
-    return redirect()
-        ->route('login.petugas')
-        ->with('success', 'Formulir berhasil divalidasi.');
-})->name('register.petugas.submit');
-
-Route::post('/register/opd', function (Request $request) {
-    $request->validate([
-        'nama_instansi' => ['required', 'string', 'max:200'],
-        'nama_penanggung_jawab' => ['required', 'string', 'max:150'],
-        'nip' => ['required', 'string', 'max:30'],
-        'username' => ['required', 'string', 'max:100'],
-        'password' => ['required', 'string', 'min:8', 'confirmed'],
-    ]);
-
-    return redirect()
-        ->route('login.opd')
-        ->with('success', 'Formulir berhasil divalidasi.');
-})->name('register.opd.submit');
+// Registrasi OPD
+Route::post('/register/opd', [
+    AuthController::class,
+    'registerOpd'
+])->name('register.opd.submit');
 
 
 // ==================================================

@@ -4,161 +4,320 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registrasi OPD</title>
+    <title>Registrasi OPD | Sistem Informasi Subdomain</title>
 
     <style>
         * {
+            margin: 0;
+            padding: 0;
             box-sizing: border-box;
+            font-family: 'Segoe UI', Arial, sans-serif;
         }
 
         body {
-            margin: 0;
             min-height: 100vh;
             display: flex;
-            justify-content: center;
             align-items: center;
-            padding: 24px;
-            font-family: Arial, sans-serif;
-            background: #f3f6fb;
-            color: #24344d;
+            justify-content: center;
+            padding: 25px;
+            background: #f1f5f9;
+            color: #163b60;
         }
 
-        .register-card {
+        .register-container {
             width: 100%;
-            max-width: 480px;
-            padding: 36px;
+            max-width: 1000px;
+            min-height: 650px;
+            display: grid;
+            grid-template-columns: 0.9fr 1.1fr;
             background: #fff;
-            border-radius: 16px;
-            box-shadow: 0 10px 35px rgba(21, 43, 77, 0.10);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 12px 40px rgba(15, 23, 42, 0.10);
+        }
+
+        /* PANEL KIRI */
+        .register-left {
+            background: linear-gradient(145deg, #123b65, #1769a6);
+            color: white;
+            padding: 50px 42px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
 
         .logo {
-            width: 60px;
-            height: 60px;
-            margin: 0 auto 18px;
+            width: 68px;
+            height: 68px;
+            border-radius: 16px;
+            background: rgba(255,255,255,0.16);
+            border: 1px solid rgba(255,255,255,0.2);
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 15px;
-            background: #eaf0fc;
-            color: #2854a2;
-            font-size: 25px;
-            font-weight: bold;
+            font-size: 33px;
+            margin-bottom: 28px;
         }
 
-        h1 {
-            margin: 0 0 10px;
-            text-align: center;
-            color: #152b4d;
-            font-size: 24px;
-        }
-
-        .subtitle {
-            margin: 0 0 26px;
-            text-align: center;
-            color: #778397;
-            font-size: 13px;
-            line-height: 1.6;
-        }
-
-        .field {
+        .register-left h1 {
+            font-size: 27px;
+            line-height: 1.4;
             margin-bottom: 17px;
         }
 
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 13px;
-            font-weight: bold;
-        }
-
-        input {
-            width: 100%;
-            padding: 13px 14px;
-            border: 1px solid #dce3ee;
-            border-radius: 8px;
-            outline: none;
+        .register-left p {
+            color: #dbeafe;
+            line-height: 1.9;
             font-size: 14px;
         }
 
-        input:focus {
-            border-color: #2854a2;
-            box-shadow: 0 0 0 3px rgba(40, 84, 162, 0.10);
-        }
-
-        .register-button {
-            width: 100%;
-            margin-top: 8px;
-            padding: 14px;
-            border: none;
-            border-radius: 8px;
-            background: #152b4d;
-            color: #fff;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .register-button:hover {
-            background: #2854a2;
-        }
-
-        .login-link {
-            margin-top: 20px;
-            text-align: center;
-            color: #778397;
+        .left-footer {
+            margin-top: 45px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            color: #cbdff2;
             font-size: 12px;
             line-height: 1.8;
         }
 
-        .login-link a {
-            color: #2854a2;
-            font-weight: bold;
-            text-decoration: none;
+        /* PANEL KANAN */
+        .register-right {
+            padding: 42px 48px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
 
-        .login-link a:hover {
-            text-decoration: underline;
+        .heading-label {
+            color: #1769a6;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-bottom: 9px;
         }
 
-        .notice {
-            margin-top: 22px;
-            padding: 12px;
-            border-radius: 8px;
-            background: #f3f6fb;
-            color: #778397;
-            font-size: 11px;
-            line-height: 1.6;
+        .register-right h2 {
+            color: #163b60;
+            font-size: 27px;
+            margin-bottom: 9px;
+        }
+
+        .subtitle {
+            color: #64748b;
+            font-size: 13px;
+            line-height: 1.7;
+            margin-bottom: 23px;
+        }
+
+        .field {
+            margin-bottom: 15px;
+        }
+
+        .field label {
+            display: block;
+            color: #334155;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .field input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 9px;
+            outline: none;
+            background: #fff;
+            font-size: 13px;
+            transition: 0.2s;
+        }
+
+        .field input:focus {
+            border-color: #1769a6;
+            box-shadow: 0 0 0 3px rgba(23,105,166,0.10);
+        }
+
+        .field input::placeholder {
+            color: #a0acba;
         }
 
         .error {
+            color: #dc2626;
+            font-size: 12px;
             margin-top: 6px;
-            color: #c62828;
+        }
+
+        .error-summary {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+            padding: 11px 13px;
+            border-radius: 8px;
+            font-size: 12px;
+            margin-bottom: 17px;
+            line-height: 1.6;
+        }
+
+        .success {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+            padding: 11px 13px;
+            border-radius: 8px;
+            font-size: 12px;
+            margin-bottom: 17px;
+            line-height: 1.6;
+        }
+
+        .register-button {
+            width: 100%;
+            padding: 14px;
+            margin-top: 5px;
+            background: #1769a6;
+            border: none;
+            border-radius: 9px;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .register-button:hover {
+            background: #123b65;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 19px;
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        .login-link a,
+        .back-link {
+            color: #1769a6;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .login-link a:hover,
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 13px;
             font-size: 12px;
         }
 
-        @media (max-width: 480px) {
-            .register-card {
-                padding: 26px 22px;
+        .notice {
+            margin-top: 17px;
+            padding: 12px;
+            border-radius: 8px;
+            background: #f1f5f9;
+            color: #64748b;
+            font-size: 11px;
+            line-height: 1.7;
+        }
+
+        @media (max-width: 750px) {
+            .register-container {
+                grid-template-columns: 1fr;
+                max-width: 500px;
+            }
+
+            .register-left {
+                padding: 32px 30px;
+            }
+
+            .register-left h1 {
+                font-size: 23px;
+            }
+
+            .logo {
+                width: 58px;
+                height: 58px;
+                font-size: 28px;
+                margin-bottom: 20px;
+            }
+
+            .left-footer {
+                margin-top: 25px;
+            }
+
+            .register-right {
+                padding: 35px 30px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            body {
+                padding: 14px;
+            }
+
+            .register-left {
+                padding: 27px 23px;
+            }
+
+            .register-right {
+                padding: 30px 22px;
             }
         }
     </style>
 </head>
 
 <body>
-    <main class="register-card">
-        <div class="logo">D</div>
 
-        <h1>Registrasi OPD</h1>
+<main class="register-container">
 
-        <p class="subtitle">
-            Diskominfotik Kabupaten Indragiri Hulu
-            <br>
-            Buat akun untuk mengajukan dan memantau permohonan subdomain instansi.
+    <!-- PANEL KIRI -->
+    <section class="register-left">
+
+        <div class="logo">🏢</div>
+
+        <h1>
+            Sistem Informasi Pengelolaan Permohonan
+            dan Monitoring Subdomain
+        </h1>
+
+        <p>
+            Selamat datang di portal pendaftaran Perangkat Daerah.
+            Buat akun OPD untuk mengajukan permohonan dan
+            memantau pengelolaan subdomain instansi.
         </p>
 
+        <div class="left-footer">
+            Dinas Komunikasi, Informatika dan Statistik<br>
+            Kabupaten Indragiri Hulu
+        </div>
+
+    </section>
+
+    <!-- PANEL KANAN -->
+    <section class="register-right">
+
+        <div class="heading-label">Portal Pengguna</div>
+
+        <h2>Registrasi OPD</h2>
+
+        <p class="subtitle">
+            Lengkapi data instansi dan penanggung jawab
+            untuk membuat akun OPD.
+        </p>
+
+        @if (session('success'))
+            <div class="success">
+                {{ session('success') }}
+            </div>
+        @endif
+
         @if ($errors->any())
-            <div class="error" style="margin-bottom: 16px;">
+            <div class="error-summary">
+                <strong>Pendaftaran belum berhasil.</strong><br>
                 Periksa kembali data yang kamu masukkan.
             </div>
         @endif
@@ -173,7 +332,7 @@
                     id="nama_instansi"
                     name="nama_instansi"
                     value="{{ old('nama_instansi') }}"
-                    placeholder="Contoh: Dinas Komunikasi dan Informatika"
+                    placeholder="Masukkan nama instansi"
                     autocomplete="organization"
                     required
                 >
@@ -215,17 +374,17 @@
             </div>
 
             <div class="field">
-                <label for="username">Username</label>
+                <label for="email">Email OPD</label>
                 <input
-                    type="text"
-                    id="username"
-                    name="username"
-                    value="{{ old('username') }}"
-                    placeholder="Buat username"
-                    autocomplete="username"
+                    type="email"
+                    id="email"
+                    name="email"
+                    value="{{ old('email') }}"
+                    placeholder="Masukkan email OPD"
+                    autocomplete="email"
                     required
                 >
-                @error('username')
+                @error('email')
                     <div class="error">{{ $message }}</div>
                 @enderror
             </div>
@@ -260,6 +419,7 @@
             <button type="submit" class="register-button">
                 Daftar Akun OPD
             </button>
+
         </form>
 
         <div class="login-link">
@@ -267,10 +427,18 @@
             <a href="{{ route('login.opd') }}">Login di sini</a>
         </div>
 
+        <a href="{{ route('pilih-login') }}" class="back-link">
+            ← Kembali ke halaman utama
+        </a>
+
         <div class="notice">
-            Halaman ini masih berupa prototype. Data registrasi belum
-            disimpan ke database dan belum dapat digunakan untuk login sungguhan.
+            Gunakan email OPD yang aktif. Email tersebut akan
+            digunakan untuk login ke dalam sistem.
         </div>
-    </main>
+
+    </section>
+
+</main>
+
 </body>
 </html>
