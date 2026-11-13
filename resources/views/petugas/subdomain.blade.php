@@ -4,10 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Data Subdomain | Diskominfotik</title>
 
     <link rel="stylesheet" href="{{ asset('css/sidebar.css') }}">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
 
     <style>
@@ -18,153 +18,146 @@
         }
 
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: "Segoe UI", Arial, sans-serif;
             background: #f3f6fb;
-            color: #26354a;
+            color: #172b4d;
+            font-size: 14px;
         }
 
         .main-content {
-            margin-left: 255px;
+            margin-left: 270px;
+            width: calc(100% - 270px);
             min-height: 100vh;
-            padding: 16px 22px 28px;
+            padding: 34px 38px 45px;
             background: #f3f6fb;
         }
 
         .sidebar a.active,
-        .sidebar .active {
-            font-weight: 700 !important;
-        }
-
+        .sidebar .active,
         .sidebar a.active span,
         .sidebar .active span {
             font-weight: 700 !important;
         }
 
         /* HEADER */
-        .topbar {
+        .page-header {
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
-            gap: 16px;
-            margin-bottom: 22px;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 27px;
         }
 
-        .breadcrumb {
-            font-size: 12px;
-            color: #7d8ba0;
-            margin-bottom: 8px;
+        .header-text {
+            flex: 1;
         }
 
-        .page-title {
-            font-size: 23px;
-            color: #172b4d;
-            margin-bottom: 5px;
-            font-weight: 700;
-        }
-
-        .page-description {
-            font-size: 13px;
-            color: #77859a;
-            line-height: 1.6;
-        }
-
-        /* TOMBOL */
-        .btn {
-            display: inline-flex;
-            justify-content: center;
+        .page-eyebrow {
+            display: flex;
             align-items: center;
             gap: 7px;
-            border: none;
-            border-radius: 8px;
-            padding: 10px 14px;
-            font-family: inherit;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            text-decoration: none;
-            transition: 0.2s;
+            color: #1769a6;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 9px;
         }
 
-        .btn-primary {
-            background: #2854a2;
-            color: white;
+        .page-header h1 {
+            color: #123b65;
+            font-size: 27px;
+            font-weight: 750;
+            margin-bottom: 7px;
         }
 
-        .btn-primary:hover {
-            background: #1d4285;
+        .page-header p {
+            color: #718096;
+            font-size: 13px;
+            line-height: 1.7;
         }
 
-        .btn-light {
-            background: #edf3ff;
-            color: #2854a2;
+        .header-icon {
+            width: 54px;
+            height: 54px;
+            flex-shrink: 0;
+            display: grid;
+            place-items: center;
+            border-radius: 15px;
+            background: #e5f1fc;
+            color: #1769a6;
+            font-size: 25px;
         }
 
-        .btn-light:hover {
-            background: #dce8ff;
-        }
-
-        /* RINGKASAN */
+        /* SUMMARY */
         .summary-grid {
             display: grid;
             grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 15px;
+            gap: 16px;
             margin-bottom: 22px;
         }
 
         .summary-card {
             display: flex;
             align-items: center;
-            gap: 13px;
-            padding: 19px;
-            background: white;
-            border: 1px solid #e2e8f1;
-            border-radius: 11px;
+            gap: 15px;
+            padding: 21px;
+            background: #fff;
+            border: 1px solid #e2eaf2;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(18, 59, 101, .035);
+            transition: transform .2s, box-shadow .2s;
+        }
+
+        .summary-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 14px rgba(18, 59, 101, .07);
         }
 
         .summary-icon {
-            width: 45px;
-            height: 45px;
+            width: 47px;
+            height: 47px;
             display: grid;
             place-items: center;
             flex-shrink: 0;
-            border-radius: 10px;
-            font-size: 20px;
+            border-radius: 11px;
+            font-size: 21px;
         }
 
         .summary-icon.blue {
-            background: #edf3ff;
-            color: #2854a2;
+            background: #eaf4fd;
+            color: #1769a6;
         }
 
         .summary-icon.green {
-            background: #e1f7ec;
+            background: #e5f7ed;
             color: #168451;
         }
 
         .summary-icon.red {
-            background: #ffe8e8;
+            background: #fff0f0;
             color: #c33e3e;
         }
 
         .summary-info p {
-            font-size: 11px;
-            color: #8793a5;
+            color: #718096;
+            font-size: 12px;
             margin-bottom: 5px;
         }
 
         .summary-info h2 {
-            color: #172b4d;
-            font-size: 23px;
-            font-weight: 700;
+            color: #123b65;
+            font-size: 25px;
+            font-weight: 750;
         }
 
-        /* KONTEN */
+        /* CONTENT CARD */
         .content-card {
-            background: white;
-            border: 1px solid #e2e8f1;
-            border-radius: 10px;
-            padding: 17px;
-            margin-bottom: 22px;
+            background: #fff;
+            border: 1px solid #e2eaf2;
+            border-radius: 12px;
+            padding: 22px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(18, 59, 101, .035);
         }
 
         .section-heading {
@@ -172,26 +165,28 @@
             justify-content: space-between;
             align-items: flex-start;
             gap: 15px;
-            margin-bottom: 17px;
+            margin-bottom: 20px;
         }
 
         .section-heading h2 {
-            font-size: 16px;
-            color: #172b4d;
+            color: #123b65;
+            font-size: 17px;
+            font-weight: 700;
             margin-bottom: 6px;
         }
 
         .section-heading p {
+            color: #718096;
             font-size: 12px;
-            color: #8793a5;
-            line-height: 1.6;
+            line-height: 1.7;
         }
 
-        /* PENCARIAN */
+        /* SEARCH AND FILTER */
         .filter-row {
             display: flex;
+            align-items: center;
             gap: 10px;
-            margin-bottom: 16px;
+            margin-bottom: 20px;
         }
 
         .search-box {
@@ -201,39 +196,81 @@
 
         .search-box i {
             position: absolute;
-            left: 13px;
-            top: 13px;
-            color: #8c99ab;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #8b9aaf;
+            font-size: 14px;
         }
 
         .search-box input,
         .filter-row select {
             width: 100%;
             height: 42px;
-            border: 1px solid #dfe5ee;
+            padding: 0 13px;
+            border: 1px solid #dce5ef;
             border-radius: 8px;
-            padding: 0 12px;
-            background: white;
+            background: #fff;
             color: #46556a;
+            font-family: inherit;
             font-size: 12px;
             outline: none;
-            font-family: inherit;
+            transition: .2s;
         }
 
         .search-box input {
-            padding-left: 38px;
+            padding-left: 39px;
         }
 
         .search-box input:focus,
         .filter-row select:focus {
-            border-color: #2854a2;
+            border-color: #1769a6;
+            box-shadow: 0 0 0 3px rgba(23, 105, 166, .08);
         }
 
         .filter-row select {
-            width: 165px;
+            width: 175px;
         }
 
-        /* TABEL */
+        /* BUTTON */
+        .btn {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 7px;
+            min-height: 39px;
+            padding: 9px 14px;
+            border: 1px solid transparent;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 12px;
+            font-weight: 650;
+            cursor: pointer;
+            text-decoration: none;
+            white-space: nowrap;
+            transition: .2s;
+        }
+
+        .btn-primary {
+            background: #1769a6;
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background: #125889;
+        }
+
+        .btn-light {
+            background: #eaf4fd;
+            color: #1769a6;
+            border-color: #d3e5f5;
+        }
+
+        .btn-light:hover {
+            background: #dceefa;
+        }
+
+        /* TABLE */
         .table-wrapper {
             width: 100%;
             overflow-x: auto;
@@ -246,27 +283,32 @@
         }
 
         th {
-            background: #eef2f8;
-            color: #344761;
+            padding: 13px 12px;
+            background: #f2f6fa;
+            color: #52647b;
             font-size: 10px;
-            font-weight: 600;
+            font-weight: 700;
             text-align: left;
-            padding: 12px 11px;
-            border-bottom: 1px solid #e8edf4;
+            letter-spacing: .35px;
+            border-bottom: 1px solid #e5ebf2;
             white-space: nowrap;
         }
 
         td {
-            padding: 13px 11px;
-            border-bottom: 1px solid #edf0f5;
-            font-size: 11px;
-            color: #536177;
+            padding: 15px 12px;
+            border-bottom: 1px solid #edf1f5;
+            color: #52647b;
+            font-size: 12px;
             line-height: 1.6;
             vertical-align: middle;
         }
 
+        tbody tr {
+            transition: background .2s;
+        }
+
         tbody tr:hover {
-            background: #fafcff;
+            background: #f8fbfe;
         }
 
         tbody tr:last-child td {
@@ -274,87 +316,107 @@
         }
 
         .domain-number {
-            color: #152b4d;
+            color: #718096;
             font-weight: 600;
             white-space: nowrap;
         }
 
         .opd-name {
-            color: #243650;
-            font-weight: 600;
-            min-width: 140px;
+            min-width: 155px;
+            color: #243c58;
+            font-weight: 650;
         }
 
         .domain-address {
-            color: #2854a2;
-            font-weight: 600;
-            overflow-wrap: anywhere;
             min-width: 175px;
+            color: #1769a6;
+            font-weight: 650;
+            overflow-wrap: anywhere;
         }
 
         .date-text {
             white-space: nowrap;
+            color: #718096;
         }
 
         /* STATUS */
         .status {
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 10px;
             border-radius: 20px;
-            padding: 5px 9px;
             font-size: 10px;
-            font-weight: 600;
+            font-weight: 700;
             white-space: nowrap;
         }
 
         .status.active {
-            background: #e1f7ec;
+            background: #e5f7ed;
             color: #168451;
         }
 
         .status.inactive {
-            background: #ffe8e8;
+            background: #fff0f0;
             color: #c33e3e;
         }
 
-        /* AKSI */
+        /* ACTION */
         .action-buttons {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 7px;
         }
 
         .icon-button {
-            width: 31px;
-            height: 31px;
+            width: 34px;
+            height: 34px;
             display: inline-grid;
             place-items: center;
-            border: none;
-            border-radius: 7px;
+            border: 1px solid #d3e5f5;
+            border-radius: 8px;
+            background: #eaf4fd;
+            color: #1769a6;
             cursor: pointer;
             font-size: 14px;
-        }
-
-        .icon-button.detail {
-            background: #edf3ff;
-            color: #2854a2;
+            transition: .2s;
         }
 
         .icon-button:hover {
-            filter: brightness(0.96);
+            background: #dceefa;
+            border-color: #b7d6ee;
+        }
+
+        /* EMPTY STATE */
+        .empty-state {
+            padding: 45px 20px;
+            text-align: center;
+            color: #8793a5;
+            font-size: 13px;
+        }
+
+        .empty-state i {
+            display: block;
+            margin-bottom: 12px;
+            color: #b6c5d5;
+            font-size: 35px;
         }
 
         /* PAGINATION */
         .pagination-wrapper {
-            margin-top: 18px;
+            margin-top: 20px;
+            color: #718096;
+            font-size: 12px;
         }
 
-        .pagination-wrapper nav > div:first-child {
-            font-size: 11px;
-            color: #8793a5;
+        .pagination-wrapper nav {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
         }
 
         .pagination-wrapper nav > div:last-child {
-            margin-top: 10px;
+            margin-top: 0;
         }
 
         .pagination-wrapper a,
@@ -362,13 +424,13 @@
             font-size: 12px;
         }
 
-        /* MODAL DETAIL */
+        /* MODAL */
         .modal-backdrop {
             display: none;
             position: fixed;
             inset: 0;
             z-index: 1000;
-            background: rgba(15, 30, 52, 0.48);
+            background: rgba(15, 30, 52, .48);
             align-items: center;
             justify-content: center;
             padding: 18px;
@@ -383,9 +445,22 @@
             max-width: 540px;
             max-height: 90vh;
             overflow-y: auto;
-            background: white;
-            border-radius: 13px;
-            box-shadow: 0 18px 55px rgba(0, 0, 0, 0.2);
+            background: #fff;
+            border: 1px solid #e2eaf2;
+            border-radius: 14px;
+            box-shadow: 0 18px 55px rgba(0, 0, 0, .2);
+            animation: modalShow .2s ease;
+        }
+
+        @keyframes modalShow {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .modal-header {
@@ -393,114 +468,203 @@
             justify-content: space-between;
             align-items: flex-start;
             gap: 12px;
-            padding: 20px 22px;
-            border-bottom: 1px solid #edf0f5;
+            padding: 21px 23px;
+            border-bottom: 1px solid #edf1f5;
         }
 
         .modal-header h2 {
-            color: #172b4d;
+            color: #123b65;
             font-size: 17px;
+            font-weight: 700;
             margin-bottom: 5px;
         }
 
         .modal-header p {
-            color: #8793a5;
-            font-size: 11px;
+            color: #718096;
+            font-size: 12px;
             line-height: 1.6;
         }
 
         .modal-close {
+            width: 31px;
+            height: 31px;
+            display: grid;
+            place-items: center;
+            flex-shrink: 0;
             border: none;
-            background: transparent;
-            color: #718097;
-            font-size: 23px;
+            border-radius: 7px;
+            background: #f2f6fa;
+            color: #718096;
+            font-size: 19px;
             cursor: pointer;
         }
 
+        .modal-close:hover {
+            background: #e7eef5;
+            color: #123b65;
+        }
+
         .modal-body {
-            padding: 22px;
+            padding: 23px;
         }
 
         .detail-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 18px;
+            gap: 20px;
         }
 
         .detail-item small {
             display: block;
             color: #8793a5;
-            font-size: 10px;
-            margin-bottom: 6px;
+            font-size: 11px;
+            margin-bottom: 7px;
         }
 
         .detail-item strong {
             display: block;
-            color: #243650;
-            font-size: 12px;
+            color: #243c58;
+            font-size: 13px;
+            font-weight: 650;
             overflow-wrap: anywhere;
             line-height: 1.6;
+        }
+
+        .detail-item.full-width {
+            grid-column: 1 / -1;
         }
 
         .modal-actions {
             display: flex;
             justify-content: flex-end;
             gap: 8px;
-            margin-top: 20px;
+            margin-top: 24px;
+            padding-top: 17px;
+            border-top: 1px solid #edf1f5;
         }
 
+        /* FOOTER */
         .footer {
-            text-align: center;
+            padding: 17px 0 5px;
             color: #9aa5b5;
             font-size: 11px;
-            padding: 12px 0;
+            text-align: center;
         }
 
+        /* RESPONSIVE */
         @media (max-width: 1000px) {
             .main-content {
                 margin-left: 220px;
-                padding: 22px 18px;
+                width: calc(100% - 220px);
+                padding: 27px 22px 35px;
             }
 
             .summary-grid {
-                gap: 10px;
+                gap: 11px;
             }
 
             .summary-card {
-                padding: 14px;
+                padding: 16px;
+            }
+
+            .content-card {
+                padding: 19px;
             }
         }
 
-        @media (max-width: 650px) {
+        @media (max-width: 760px) {
             .main-content {
                 margin-left: 0;
-                padding: 20px 14px;
+                width: 100%;
+                padding: 22px 17px 30px;
             }
 
-            .topbar,
-            .section-heading {
-                flex-direction: column;
+            .page-header h1 {
+                font-size: 23px;
             }
 
             .summary-grid {
                 grid-template-columns: 1fr;
             }
 
+            .summary-card {
+                padding: 16px 18px;
+            }
+
+            .filter-row {
+                flex-wrap: wrap;
+            }
+
+            .search-box {
+                flex-basis: 100%;
+            }
+
+            .filter-row select {
+                flex: 1;
+                width: auto;
+            }
+        }
+
+        @media (max-width: 560px) {
+            .main-content {
+                padding: 18px 12px 25px;
+            }
+
+            .page-header h1 {
+                font-size: 21px;
+            }
+
+            .page-header p {
+                font-size: 12px;
+            }
+
+            .header-icon {
+                width: 45px;
+                height: 45px;
+                font-size: 21px;
+            }
+
+            .content-card {
+                padding: 16px 13px;
+            }
+
+            .section-heading h2 {
+                font-size: 15px;
+            }
+
             .filter-row {
                 flex-direction: column;
+                align-items: stretch;
             }
 
             .filter-row select {
                 width: 100%;
             }
 
+            .filter-row .btn {
+                width: 100%;
+            }
+
             .detail-grid {
                 grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .detail-item.full-width {
+                grid-column: auto;
             }
 
             .modal-header,
             .modal-body {
-                padding: 16px;
+                padding: 17px;
+            }
+
+            .modal-actions {
+                flex-direction: column;
+            }
+
+            .modal-actions .btn {
+                width: 100%;
             }
         }
     </style>
@@ -514,17 +678,23 @@
     <main class="main-content">
 
         {{-- HEADER --}}
-        <header class="topbar">
-            <div>
-                <div class="breadcrumb">
-                    Dashboard / Data Subdomain
+        <header class="page-header">
+            <div class="header-text">
+                <div class="page-eyebrow">
+                    <i class="bi bi-building"></i>
+                    AREA PENGELOLAAN DISKOMINFOTIK
                 </div>
 
-                <h1 class="page-title">Data Subdomain</h1>
+                <h1>Data Subdomain</h1>
 
-                <p class="page-description">
-                    Kelola data subdomain milik Perangkat Daerah yang tercatat di Diskominfotik.
+                <p>
+                    Kelola dan pantau data subdomain milik Perangkat Daerah
+                    yang telah tercatat di Diskominfotik.
                 </p>
+            </div>
+
+            <div class="header-icon">
+                <i class="bi bi-globe2"></i>
             </div>
         </header>
 
@@ -535,6 +705,7 @@
                 <div class="summary-icon blue">
                     <i class="bi bi-globe2"></i>
                 </div>
+
                 <div class="summary-info">
                     <p>Total Subdomain</p>
                     <h2>{{ $total }}</h2>
@@ -545,6 +716,7 @@
                 <div class="summary-icon green">
                     <i class="bi bi-check-circle"></i>
                 </div>
+
                 <div class="summary-info">
                     <p>Subdomain Aktif</p>
                     <h2>{{ $aktif }}</h2>
@@ -555,6 +727,7 @@
                 <div class="summary-icon red">
                     <i class="bi bi-x-circle"></i>
                 </div>
+
                 <div class="summary-info">
                     <p>Subdomain Nonaktif</p>
                     <h2>{{ $nonaktif }}</h2>
@@ -563,13 +736,16 @@
 
         </section>
 
-        {{-- TABEL DATA --}}
+        {{-- DAFTAR SUBDOMAIN --}}
         <section class="content-card">
 
             <div class="section-heading">
                 <div>
                     <h2>Daftar Subdomain Perangkat Daerah</h2>
-                    <p>Data subdomain yang tercatat beserta statusnya.</p>
+                    <p>
+                        Berikut merupakan data subdomain yang telah tercatat
+                        beserta informasi dan statusnya.
+                    </p>
                 </div>
             </div>
 
@@ -580,6 +756,7 @@
 
                 <div class="search-box">
                     <i class="bi bi-search"></i>
+
                     <input
                         type="text"
                         name="search"
@@ -591,10 +768,14 @@
 
                 <select name="status" aria-label="Filter status subdomain">
                     <option value="">Semua Status</option>
-                    <option value="aktif" {{ request('status') === 'aktif' ? 'selected' : '' }}>
+
+                    <option value="aktif"
+                        {{ request('status') === 'aktif' ? 'selected' : '' }}>
                         Aktif
                     </option>
-                    <option value="nonaktif" {{ request('status') === 'nonaktif' ? 'selected' : '' }}>
+
+                    <option value="nonaktif"
+                        {{ request('status') === 'nonaktif' ? 'selected' : '' }}>
                         Nonaktif
                     </option>
                 </select>
@@ -605,12 +786,13 @@
                 </button>
 
                 <a href="{{ route('petugas.subdomain') }}" class="btn btn-light">
+                    <i class="bi bi-arrow-counterclockwise"></i>
                     Reset
                 </a>
 
             </form>
 
-            {{-- TABEL --}}
+            {{-- TABEL DATA --}}
             <div class="table-wrapper">
                 <table>
                     <thead>
@@ -625,7 +807,9 @@
                     </thead>
 
                     <tbody>
+
                         @forelse ($subdomains as $index => $subdomain)
+
                             @php
                                 $tanggalPencatatan = $subdomain->tanggal_aktif
                                     ? \Carbon\Carbon::parse($subdomain->tanggal_aktif)->translatedFormat('d M Y')
@@ -637,8 +821,10 @@
                             @endphp
 
                             <tr>
-                                <td class="domain-number">
-                                    {{ $subdomains->firstItem() + $index }}
+                                <td>
+                                    <span class="domain-number">
+                                        {{ $subdomains->firstItem() + $index }}
+                                    </span>
                                 </td>
 
                                 <td>
@@ -659,14 +845,25 @@
 
                                 <td>
                                     @if ($subdomain->status === 'aktif')
-                                        <span class="status active">● Aktif</span>
+
+                                        <span class="status active">
+                                            <i class="bi bi-check-circle-fill"></i>
+                                            Aktif
+                                        </span>
+
                                     @else
-                                        <span class="status inactive">● Nonaktif</span>
+
+                                        <span class="status inactive">
+                                            <i class="bi bi-x-circle-fill"></i>
+                                            Nonaktif
+                                        </span>
+
                                     @endif
                                 </td>
 
                                 <td>
                                     <div class="action-buttons">
+
                                         <button
                                             type="button"
                                             class="icon-button detail"
@@ -681,20 +878,24 @@
                                         >
                                             <i class="bi bi-eye"></i>
                                         </button>
+
                                     </div>
                                 </td>
                             </tr>
 
                         @empty
+
                             <tr>
-                                <td colspan="6" style="text-align: center; padding: 30px;">
-                                    <i class="bi bi-database" style="font-size: 22px;"></i>
-                                    <p style="margin-top: 8px;">
+                                <td colspan="6">
+                                    <div class="empty-state">
+                                        <i class="bi bi-database"></i>
                                         Belum ada data subdomain yang sesuai.
-                                    </p>
+                                    </div>
                                 </td>
                             </tr>
+
                         @endforelse
+
                     </tbody>
                 </table>
             </div>
@@ -714,8 +915,9 @@
 
     </main>
 
-    {{-- MODAL DETAIL --}}
+    {{-- MODAL DETAIL SUBDOMAIN --}}
     <div class="modal-backdrop" id="detailModal">
+
         <section class="modal">
 
             <header class="modal-header">
@@ -730,11 +932,12 @@
                     onclick="closeDetailModal()"
                     aria-label="Tutup"
                 >
-                    &times;
+                    <i class="bi bi-x-lg"></i>
                 </button>
             </header>
 
             <div class="modal-body">
+
                 <div class="detail-grid">
 
                     <div class="detail-item">
@@ -757,7 +960,7 @@
                         <strong id="detailStatus">-</strong>
                     </div>
 
-                    <div class="detail-item" style="grid-column: 1 / -1;">
+                    <div class="detail-item full-width">
                         <small>Keterangan</small>
                         <strong id="detailDescription">-</strong>
                     </div>
@@ -773,9 +976,11 @@
                         Tutup
                     </button>
                 </div>
+
             </div>
 
         </section>
+
     </div>
 
     <script>
@@ -803,7 +1008,7 @@
             detailModal.classList.add('show');
         }
 
-        // MENUTUP MODAL DETAIL
+        // MENUTUP MODAL
         function closeDetailModal() {
             detailModal.classList.remove('show');
         }
@@ -815,7 +1020,7 @@
             }
         });
 
-        // TUTUP MODAL DENGAN TOMBOL ESCAPE
+        // MENUTUP MODAL DENGAN TOMBOL ESCAPE
         document.addEventListener('keydown', function(event) {
             if (event.key === 'Escape') {
                 closeDetailModal();

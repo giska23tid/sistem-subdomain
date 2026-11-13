@@ -7,7 +7,6 @@
     <title>Detail Permohonan Perubahan | Diskominfotik</title>
 
     <link rel="stylesheet" href="{{ asset('css/sidebar.css') }}">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
 
     <style>
@@ -18,93 +17,189 @@
         }
 
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: "Segoe UI", Arial, sans-serif;
             background: #f3f6fb;
-            color: #26354a;
+            color: #172b4d;
+            font-size: 14px;
         }
 
         .main-content {
-            margin-left: 285px;
+            margin-left: 270px;
+            width: calc(100% - 270px);
             min-height: 100vh;
-            padding: 22px;
+            padding: 34px 38px 45px;
         }
 
+        /* BREADCRUMB */
         .breadcrumb {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            color: #8997a9;
             font-size: 12px;
-            color: #8793a5;
-            margin-bottom: 9px;
+            margin-bottom: 20px;
         }
 
         .breadcrumb a {
-            color: #2854a2;
+            color: #1769a6;
             text-decoration: none;
+            font-weight: 600;
         }
 
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        /* HEADER */
         .page-header {
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
-            gap: 15px;
+            align-items: center;
+            gap: 20px;
             margin-bottom: 22px;
         }
 
-        .page-title {
-            font-size: 23px;
-            color: #172b4d;
+        .header-text {
+            min-width: 0;
+        }
+
+        .page-eyebrow {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            color: #1769a6;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .page-header h1 {
+            color: #123b65;
+            font-size: 27px;
+            font-weight: 750;
             margin-bottom: 6px;
         }
 
-        .page-description {
-            color: #77859a;
+        .page-header p {
+            color: #718096;
             font-size: 13px;
-            line-height: 1.6;
+            line-height: 1.7;
         }
 
+        .header-icon {
+            width: 54px;
+            height: 54px;
+            flex-shrink: 0;
+            display: grid;
+            place-items: center;
+            background: #e5f1fc;
+            color: #1769a6;
+            border-radius: 15px;
+            font-size: 25px;
+        }
+
+        /* ALERT */
+        .alert {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 13px 15px;
+            border-radius: 10px;
+            margin-bottom: 18px;
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        .alert > i {
+            font-size: 16px;
+            margin-top: 1px;
+        }
+
+        .alert-success {
+            background: #e9f8ef;
+            color: #168451;
+            border: 1px solid #ccebd8;
+        }
+
+        .alert-danger {
+            background: #fff0f0;
+            color: #bd3b3b;
+            border: 1px solid #f4d1d1;
+        }
+
+        .alert ul {
+            margin: 6px 0 0 17px;
+        }
+
+        /* CONTENT CARD */
         .content-card {
-            background: white;
-            border: 1px solid #e5eaf1;
+            background: #fff;
+            border: 1px solid #e2eaf2;
             border-radius: 12px;
-            padding: 22px;
+            padding: 23px;
             margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(18, 59, 101, .035);
         }
 
         .card-heading {
             display: flex;
             align-items: center;
-            gap: 10px;
-            padding-bottom: 15px;
-            margin-bottom: 18px;
-            border-bottom: 1px solid #edf0f5;
+            gap: 11px;
+            padding-bottom: 16px;
+            margin-bottom: 21px;
+            border-bottom: 1px solid #edf1f6;
         }
 
-        .card-heading i {
-            color: #2854a2;
-            font-size: 19px;
+        .card-heading-icon {
+            width: 36px;
+            height: 36px;
+            display: grid;
+            place-items: center;
+            flex-shrink: 0;
+            border-radius: 9px;
+            background: #eaf4fd;
+            color: #1769a6;
+            font-size: 17px;
         }
 
         .card-heading h2 {
-            font-size: 16px;
-            color: #172b4d;
+            color: #123b65;
+            font-size: 15px;
+            font-weight: 700;
         }
 
+        .card-heading p {
+            color: #8997a9;
+            font-size: 11px;
+            margin-top: 3px;
+        }
+
+        /* DETAIL */
         .detail-grid {
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 20px 25px;
+            gap: 22px 28px;
+        }
+
+        .detail-item {
+            min-width: 0;
         }
 
         .detail-item label {
             display: block;
-            color: #8793a5;
+            color: #8997a9;
             font-size: 11px;
+            font-weight: 600;
             margin-bottom: 7px;
         }
 
         .detail-item p {
-            color: #26354a;
+            color: #263b54;
             font-size: 13px;
-            font-weight: 600;
-            line-height: 1.6;
+            font-weight: 650;
+            line-height: 1.7;
             overflow-wrap: anywhere;
         }
 
@@ -112,35 +207,134 @@
             grid-column: 1 / -1;
         }
 
+        .detail-divider {
+            grid-column: 1 / -1;
+            height: 1px;
+            background: #edf1f6;
+            margin: 1px 0;
+        }
+
+        /* SUBDOMAIN COMPARISON */
+        .subdomain-comparison {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 42px minmax(0, 1fr);
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 23px;
+        }
+
+        .subdomain-box {
+            min-width: 0;
+            padding: 17px;
+            border: 1px solid #e2eaf2;
+            border-radius: 10px;
+            background: #fbfdff;
+        }
+
+        .subdomain-box.new {
+            background: #f2f8fe;
+            border-color: #cfe3f5;
+        }
+
+        .subdomain-label {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            color: #718096;
+            font-size: 11px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .subdomain-box.new .subdomain-label {
+            color: #1769a6;
+        }
+
+        .subdomain-name {
+            color: #344b65;
+            font-size: 14px;
+            font-weight: 700;
+            line-height: 1.6;
+            overflow-wrap: anywhere;
+        }
+
+        .subdomain-box.new .subdomain-name {
+            color: #123b65;
+        }
+
+        .subdomain-arrow {
+            display: grid;
+            place-items: center;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: #eaf4fd;
+            color: #1769a6;
+            font-size: 18px;
+        }
+
+        /* STATUS */
         .status {
             display: inline-flex;
             align-items: center;
             gap: 6px;
+            width: fit-content;
             border-radius: 20px;
             padding: 6px 11px;
             font-size: 11px;
-            font-weight: 600;
+            font-weight: 700;
         }
 
         .status.pending {
-            background: #fff0cc;
+            background: #fff5df;
             color: #a96b00;
         }
 
         .status.accepted {
-            background: #e1f7ec;
+            background: #e7f7ed;
             color: #168451;
         }
 
         .status.rejected {
-            background: #ffe8e8;
-            color: #c33e3e;
+            background: #fff0f0;
+            color: #bd3b3b;
         }
 
+        .decision-info {
+            display: flex;
+            align-items: flex-start;
+            gap: 9px;
+            padding: 14px 15px;
+            background: #f1f6fb;
+            border: 1px solid #e0eaf3;
+            border-radius: 9px;
+            color: #536b84;
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        .decision-info i {
+            color: #1769a6;
+            font-size: 15px;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .rejection-info {
+            background: #fff5f5;
+            border: 1px solid #f3dada;
+            color: #a94444;
+        }
+
+        .rejection-info i {
+            color: #bd3b3b;
+        }
+
+        /* DOCUMENT */
         .document-list {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 11px;
         }
 
         .document-item {
@@ -148,9 +342,15 @@
             justify-content: space-between;
             align-items: center;
             gap: 15px;
-            padding: 15px;
-            border: 1px solid #e5eaf1;
-            border-radius: 9px;
+            padding: 14px 15px;
+            border: 1px solid #e5ebf2;
+            border-radius: 10px;
+            transition: .2s;
+        }
+
+        .document-item:hover {
+            border-color: #c8dced;
+            background: #fbfdff;
         }
 
         .document-info {
@@ -161,122 +361,154 @@
         }
 
         .document-icon {
-            width: 42px;
-            height: 42px;
+            width: 43px;
+            height: 43px;
             flex-shrink: 0;
-            border-radius: 9px;
-            background: #edf3ff;
-            color: #2854a2;
             display: grid;
             place-items: center;
-            font-size: 19px;
+            border-radius: 10px;
+            background: #eaf4fd;
+            color: #1769a6;
+            font-size: 20px;
         }
 
         .document-name {
+            color: #263b54;
             font-size: 12px;
-            color: #26354a;
-            font-weight: 600;
-            margin-bottom: 5px;
+            font-weight: 700;
+            line-height: 1.5;
+            margin-bottom: 4px;
         }
 
         .document-filename {
-            font-size: 10px;
-            color: #8793a5;
+            color: #8997a9;
+            font-size: 11px;
             overflow-wrap: anywhere;
+            line-height: 1.5;
         }
 
         .document-button {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            padding: 8px 11px;
-            background: #edf3ff;
-            color: #2854a2;
+            justify-content: center;
+            gap: 7px;
+            padding: 9px 12px;
+            background: #eaf4fd;
+            color: #1769a6;
             text-decoration: none;
-            border-radius: 7px;
+            border-radius: 8px;
             font-size: 11px;
-            font-weight: 600;
+            font-weight: 700;
             white-space: nowrap;
+            transition: .2s;
         }
 
         .document-button:hover {
-            background: #dce8ff;
+            background: #d8eafa;
         }
 
-        .alert {
-            padding: 13px 15px;
-            border-radius: 8px;
-            margin-bottom: 17px;
-            font-size: 12px;
-            line-height: 1.6;
-        }
-
-        .alert-success {
-            background: #e1f7ec;
-            color: #168451;
-            border: 1px solid #c6edd8;
-        }
-
-        .alert-danger {
-            background: #ffe8e8;
-            color: #c33e3e;
-            border: 1px solid #ffd0d0;
-        }
-
+        /* DECISION */
         .decision-description {
-            color: #77859a;
+            color: #718096;
             font-size: 12px;
-            line-height: 1.7;
+            line-height: 1.8;
+            margin-bottom: 19px;
+        }
+
+        .decision-form {
+            padding: 17px;
+            border: 1px solid #e5ebf2;
+            border-radius: 10px;
             margin-bottom: 17px;
+        }
+
+        .decision-form:last-child {
+            margin-bottom: 0;
+        }
+
+        .form-section-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #123b65;
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .form-section-title i {
+            font-size: 16px;
+        }
+
+        .form-section-title.accept {
+            color: #168451;
+        }
+
+        .form-section-title.reject {
+            color: #bd3b3b;
         }
 
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 16px;
         }
 
         .form-group label {
             display: block;
-            color: #344761;
+            color: #344b65;
             font-size: 12px;
-            font-weight: 600;
+            font-weight: 700;
             margin-bottom: 8px;
+        }
+
+        .required-mark {
+            color: #d64545;
         }
 
         .form-group input,
         .form-group textarea {
             width: 100%;
-            border: 1px solid #dfe5ee;
-            border-radius: 8px;
-            padding: 12px;
+            border: 1px solid #dce5ee;
+            border-radius: 9px;
+            padding: 12px 13px;
+            background: #fff;
+            color: #263b54;
             font-family: inherit;
             font-size: 12px;
             outline: none;
+            transition: .2s;
         }
 
         .form-group input:focus,
         .form-group textarea:focus {
-            border-color: #2854a2;
-            box-shadow: 0 0 0 3px rgba(40, 84, 162, 0.10);
+            border-color: #4a91c5;
+            box-shadow: 0 0 0 3px rgba(23, 105, 166, .1);
+        }
+
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: #a4afbd;
         }
 
         .form-group textarea {
-            min-height: 105px;
+            min-height: 110px;
             resize: vertical;
+            line-height: 1.7;
         }
 
         .form-hint {
-            color: #8793a5;
+            color: #8997a9;
             font-size: 11px;
             margin-top: 7px;
             line-height: 1.6;
         }
 
         .error-text {
-            color: #c33e3e;
+            color: #bd3b3b;
             font-size: 11px;
             margin-top: 6px;
         }
 
+        /* BUTTON */
         .button {
             display: inline-flex;
             align-items: center;
@@ -284,16 +516,18 @@
             gap: 7px;
             border: none;
             border-radius: 8px;
-            padding: 11px 17px;
+            padding: 10px 15px;
+            font-family: inherit;
             font-size: 12px;
-            font-weight: 600;
+            font-weight: 700;
             text-decoration: none;
             cursor: pointer;
+            transition: .2s;
         }
 
         .button-accept {
             background: #168451;
-            color: white;
+            color: #fff;
         }
 
         .button-accept:hover {
@@ -302,7 +536,7 @@
 
         .button-reject {
             background: #c33e3e;
-            color: white;
+            color: #fff;
         }
 
         .button-reject:hover {
@@ -310,61 +544,82 @@
         }
 
         .button-back {
-            background: white;
-            color: #526178;
-            border: 1px solid #dfe5ee;
+            background: #e9eef5;
+            color: #52647a;
         }
 
         .button-back:hover {
-            background: #edf1f7;
+            background: #dce5ef;
         }
 
         .button-download {
-            background: #2854a2;
-            color: white;
+            background: #1769a6;
+            color: #fff;
         }
 
         .button-download:hover {
-            background: #1d427f;
-        }
-
-        .decision-info {
-            background: #f3f6fb;
-            border-radius: 8px;
-            padding: 15px;
-            color: #536177;
-            font-size: 12px;
-            line-height: 1.7;
+            background: #125583;
         }
 
         .footer {
             text-align: center;
-            color: #9aa5b5;
+            color: #9aa7b7;
             font-size: 11px;
-            padding: 18px 0;
+            padding: 25px 0 5px;
         }
 
+        /* RESPONSIVE */
         @media (max-width: 1000px) {
             .main-content {
                 margin-left: 220px;
+                width: calc(100% - 220px);
+                padding: 27px 22px 35px;
             }
         }
 
-        @media (max-width: 650px) {
+        @media (max-width: 760px) {
             .main-content {
                 margin-left: 0;
-                padding: 18px 14px;
+                width: 100%;
+                padding: 22px 17px 30px;
+            }
+
+            .page-header h1 {
+                font-size: 24px;
+            }
+
+            .content-card {
+                padding: 19px;
+            }
+        }
+
+        @media (max-width: 560px) {
+            .main-content {
+                padding: 18px 12px 25px;
             }
 
             .page-header {
-                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .page-header h1 {
+                font-size: 22px;
+            }
+
+            .header-icon {
+                width: 43px;
+                height: 43px;
+                border-radius: 12px;
+                font-size: 20px;
             }
 
             .detail-grid {
                 grid-template-columns: 1fr;
+                gap: 18px;
             }
 
-            .detail-item.full {
+            .detail-item.full,
+            .detail-divider {
                 grid-column: auto;
             }
 
@@ -372,9 +627,31 @@
                 padding: 16px;
             }
 
+            .subdomain-comparison {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+
+            .subdomain-arrow {
+                margin: 0 auto;
+                transform: rotate(90deg);
+            }
+
             .document-item {
                 align-items: flex-start;
                 flex-direction: column;
+            }
+
+            .document-button {
+                width: 100%;
+            }
+
+            .decision-form {
+                padding: 13px;
+            }
+
+            .button {
+                width: 100%;
             }
         }
     </style>
@@ -386,46 +663,54 @@
 
     <main class="main-content">
 
-        <div class="page-header">
-            <div>
-                <div class="breadcrumb">
-                    <a href="{{ route('petugas.perubahan') }}">
-                        Permohonan Perubahan Subdomain
-                    </a>
-                    / Detail Permohonan
+        {{-- BREADCRUMB --}}
+        <div class="breadcrumb">
+            <a href="{{ route('petugas.perubahan') }}">
+                Permohonan Perubahan Subdomain
+            </a>
+            <i class="bi bi-chevron-right"></i>
+            <span>Detail Permohonan</span>
+        </div>
+
+        {{-- HEADER --}}
+        <header class="page-header">
+            <div class="header-text">
+                <div class="page-eyebrow">
+                    <i class="bi bi-building"></i>
+                    AREA PENGELOLAAN DISKOMINFOTIK
                 </div>
 
-                <h1 class="page-title">
-                    Detail Permohonan Perubahan Subdomain
-                </h1>
+                <h1>Detail Perubahan Subdomain</h1>
 
-                <p class="page-description">
+                <p>
                     Periksa informasi dan dokumen persyaratan sebelum memberikan keputusan.
                 </p>
             </div>
 
-            <a href="{{ route('petugas.perubahan') }}" class="button button-back">
-                <i class="bi bi-arrow-left"></i>
-                Kembali
-            </a>
-        </div>
+            <div class="header-icon">
+                <i class="bi bi-arrow-left-right"></i>
+            </div>
+        </header>
 
         {{-- NOTIFIKASI --}}
         @if (session('success'))
             <div class="alert alert-success">
-                <i class="bi bi-check-circle"></i>
-                {{ session('success') }}
+                <i class="bi bi-check-circle-fill"></i>
+                <div>{{ session('success') }}</div>
             </div>
         @endif
 
         @if ($errors->any())
             <div class="alert alert-danger">
-                <strong>Terjadi kesalahan:</strong>
-                <ul style="margin: 7px 0 0 18px;">
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
+                <i class="bi bi-exclamation-circle-fill"></i>
+                <div>
+                    <strong>Terjadi kesalahan:</strong>
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
             </div>
         @endif
 
@@ -433,15 +718,22 @@
         <section class="content-card">
 
             <div class="card-heading">
-                <i class="bi bi-file-earmark-text"></i>
-                <h2>Informasi Permohonan</h2>
+                <div class="card-heading-icon">
+                    <i class="bi bi-file-earmark-text"></i>
+                </div>
+                <div>
+                    <h2>Informasi Permohonan</h2>
+                    <p>Rincian pengajuan perubahan nama subdomain Perangkat Daerah</p>
+                </div>
             </div>
 
             <div class="detail-grid">
 
                 <div class="detail-item">
                     <label>ID Permohonan</label>
-                    <p>PB-{{ str_pad($permohonan->id, 4, '0', STR_PAD_LEFT) }}</p>
+                    <p>
+                        PB-{{ str_pad($permohonan->id, 4, '0', STR_PAD_LEFT) }}
+                    </p>
                 </div>
 
                 <div class="detail-item">
@@ -473,15 +765,45 @@
                     <p>Perubahan Nama Subdomain</p>
                 </div>
 
-                <div class="detail-item">
-                    <label>Subdomain Lama</label>
-                    <p>{{ $permohonan->subdomain_lama }}.inhukab.go.id</p>
+                <div class="detail-divider"></div>
+
+                {{-- PERBANDINGAN SUBDOMAIN LAMA DAN BARU --}}
+                <div class="detail-item full">
+
+                    <label>Perubahan Nama Subdomain</label>
+
+                    <div class="subdomain-comparison">
+
+                        <div class="subdomain-box">
+                            <div class="subdomain-label">
+                                <i class="bi bi-globe"></i>
+                                SUBDOMAIN LAMA
+                            </div>
+
+                            <div class="subdomain-name">
+                                {{ $permohonan->subdomain_lama }}.inhukab.go.id
+                            </div>
+                        </div>
+
+                        <div class="subdomain-arrow">
+                            <i class="bi bi-arrow-right"></i>
+                        </div>
+
+                        <div class="subdomain-box new">
+                            <div class="subdomain-label">
+                                <i class="bi bi-globe2"></i>
+                                SUBDOMAIN BARU
+                            </div>
+
+                            <div class="subdomain-name">
+                                {{ $permohonan->nama_subdomain }}.inhukab.go.id
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
 
-                <div class="detail-item">
-                    <label>Subdomain Baru</label>
-                    <p>{{ $permohonan->nama_subdomain }}.inhukab.go.id</p>
-                </div>
+                <div class="detail-divider"></div>
 
                 <div class="detail-item">
                     <label>Nomor Surat OPD</label>
@@ -511,15 +833,18 @@
 
                     @if ($permohonan->status === 'diajukan')
                         <span class="status pending">
-                            <i class="bi bi-clock"></i> Perlu Diperiksa
+                            <i class="bi bi-clock"></i>
+                            Perlu Diperiksa
                         </span>
                     @elseif ($permohonan->status === 'diterima')
                         <span class="status accepted">
-                            <i class="bi bi-check-circle"></i> Diterima
+                            <i class="bi bi-check-circle"></i>
+                            Diterima
                         </span>
                     @elseif ($permohonan->status === 'ditolak')
                         <span class="status rejected">
-                            <i class="bi bi-x-circle"></i> Ditolak
+                            <i class="bi bi-x-circle"></i>
+                            Ditolak
                         </span>
                     @endif
                 </div>
@@ -532,9 +857,11 @@
                 @if ($permohonan->status === 'ditolak')
                     <div class="detail-item full">
                         <label>Alasan Penolakan</label>
-                        <p style="color: #c33e3e; font-weight: 400;">
-                            {{ $permohonan->catatan ?? '-' }}
-                        </p>
+
+                        <div class="decision-info rejection-info">
+                            <i class="bi bi-exclamation-circle"></i>
+                            <span>{{ $permohonan->catatan ?? '-' }}</span>
+                        </div>
                     </div>
                 @endif
 
@@ -545,8 +872,13 @@
         <section class="content-card">
 
             <div class="card-heading">
-                <i class="bi bi-folder2-open"></i>
-                <h2>Dokumen Persyaratan Pasal 35</h2>
+                <div class="card-heading-icon">
+                    <i class="bi bi-folder2-open"></i>
+                </div>
+                <div>
+                    <h2>Dokumen Persyaratan Pasal 35</h2>
+                    <p>Dokumen yang harus disertakan dalam pengajuan perubahan nama subdomain</p>
+                </div>
             </div>
 
             <div class="document-list">
@@ -571,7 +903,6 @@
                     <div class="document-item">
 
                         <div class="document-info">
-
                             <div class="document-icon">
                                 <i class="bi bi-file-earmark-pdf"></i>
                             </div>
@@ -585,7 +916,6 @@
                                     {{ $dokumen->nama_file ?? 'Dokumen belum tersedia' }}
                                 </div>
                             </div>
-
                         </div>
 
                         @if ($dokumen && $dokumen->path_file)
@@ -616,8 +946,13 @@
         <section class="content-card">
 
             <div class="card-heading">
-                <i class="bi bi-clipboard-check"></i>
-                <h2>Keputusan Petugas</h2>
+                <div class="card-heading-icon">
+                    <i class="bi bi-clipboard-check"></i>
+                </div>
+                <div>
+                    <h2>Keputusan Petugas</h2>
+                    <p>Hasil pemeriksaan dan tindak lanjut permohonan perubahan subdomain</p>
+                </div>
             </div>
 
             @if ($permohonan->status === 'diajukan')
@@ -625,99 +960,133 @@
                 <p class="decision-description">
                     Pastikan seluruh informasi dan dokumen persyaratan telah diperiksa.
                     Petugas dapat menerima atau menolak permohonan berdasarkan hasil pemeriksaan.
+                    Jika diterima, subdomain lama akan dinonaktifkan sesuai proses sistem.
                 </p>
 
                 {{-- FORM PENERIMAAN --}}
-                <form
-                    action="{{ route('petugas.perubahan.terima', $permohonan->id) }}"
-                    method="POST"
-                    onsubmit="return confirm('Apakah kamu yakin ingin menerima permohonan ini? Subdomain lama akan dinonaktifkan dan subdomain baru akan dicatat sebagai subdomain aktif.')"
-                    style="margin-bottom: 20px;"
-                >
-                    @csrf
+                <div class="decision-form">
 
-                    <div class="form-group">
-                        <label for="ip_address">
-                            IP Address / Server Subdomain Baru
-                        </label>
-
-                        <input
-                            type="text"
-                            name="ip_address"
-                            id="ip_address"
-                            value="{{ old('ip_address') }}"
-                            placeholder="Contoh: 68.168.218.43"
-                            maxlength="45"
-                            required
-                        >
-
-                        @error('ip_address')
-                            <div class="error-text">{{ $message }}</div>
-                        @enderror
-
-                        <p class="form-hint">
-                            Masukkan alamat IP atau server yang telah ditetapkan
-                            untuk subdomain baru.
-                        </p>
+                    <div class="form-section-title accept">
+                        <i class="bi bi-check-circle"></i>
+                        Penerimaan Permohonan
                     </div>
 
-                    <button type="submit" class="button button-accept">
-                        <i class="bi bi-check-circle"></i>
-                        Terima Permohonan
-                    </button>
-                </form>
+                    <form
+                        action="{{ route('petugas.perubahan.terima', $permohonan->id) }}"
+                        method="POST"
+                        onsubmit="return confirm('Apakah kamu yakin ingin menerima permohonan ini? Subdomain lama akan dinonaktifkan sesuai proses sistem.')"
+                    >
+                        @csrf
+
+                        <div class="form-group">
+                            <label for="ip_address">
+                                IP Address / Server Subdomain Baru
+                                <span class="required-mark">*</span>
+                            </label>
+
+                            <input
+                                type="text"
+                                name="ip_address"
+                                id="ip_address"
+                                value="{{ old('ip_address') }}"
+                                placeholder="Contoh: 68.168.218.43"
+                                maxlength="45"
+                                required
+                            >
+
+                            @error('ip_address')
+                                <div class="error-text">
+                                    {{ $message }}
+                                </div>
+                            @enderror
+
+                            <p class="form-hint">
+                                Masukkan alamat IP atau server yang telah ditetapkan
+                                untuk subdomain baru.
+                            </p>
+                        </div>
+
+                        <button type="submit" class="button button-accept">
+                            <i class="bi bi-check-circle"></i>
+                            Terima Permohonan
+                        </button>
+                    </form>
+
+                </div>
 
                 {{-- FORM PENOLAKAN --}}
-                <form
-                    action="{{ route('petugas.perubahan.tolak', $permohonan->id) }}"
-                    method="POST"
-                    onsubmit="return confirm('Apakah kamu yakin ingin menolak permohonan ini?')"
-                >
-                    @csrf
+                <div class="decision-form">
 
-                    <div class="form-group">
-                        <label for="catatan">Alasan Penolakan</label>
-
-                        <textarea
-                            name="catatan"
-                            id="catatan"
-                            maxlength="2000"
-                            placeholder="Tuliskan alasan penolakan permohonan..."
-                            required
-                        >{{ old('catatan') }}</textarea>
-
-                        @error('catatan')
-                            <div class="error-text">{{ $message }}</div>
-                        @enderror
+                    <div class="form-section-title reject">
+                        <i class="bi bi-x-circle"></i>
+                        Penolakan Permohonan
                     </div>
 
-                    <button type="submit" class="button button-reject">
-                        <i class="bi bi-x-circle"></i>
-                        Tolak Permohonan
-                    </button>
+                    <form
+                        action="{{ route('petugas.perubahan.tolak', $permohonan->id) }}"
+                        method="POST"
+                        onsubmit="return confirm('Apakah kamu yakin ingin menolak permohonan ini?')"
+                    >
+                        @csrf
 
-                </form>
+                        <div class="form-group">
+                            <label for="catatan">
+                                Alasan Penolakan
+                                <span class="required-mark">*</span>
+                            </label>
+
+                            <textarea
+                                name="catatan"
+                                id="catatan"
+                                maxlength="2000"
+                                placeholder="Tuliskan alasan penolakan permohonan..."
+                                required
+                            >{{ old('catatan') }}</textarea>
+
+                            @error('catatan')
+                                <div class="error-text">
+                                    {{ $message }}
+                                </div>
+                            @enderror
+
+                            <p class="form-hint">
+                                Berikan alasan yang jelas agar Perangkat Daerah mengetahui
+                                bagian persyaratan yang perlu diperhatikan.
+                            </p>
+                        </div>
+
+                        <button type="submit" class="button button-reject">
+                            <i class="bi bi-x-circle"></i>
+                            Tolak Permohonan
+                        </button>
+                    </form>
+
+                </div>
 
             @elseif ($permohonan->status === 'diterima')
 
                 <div class="decision-info">
-                    <i class="bi bi-check-circle"></i>
-                    Permohonan perubahan nama subdomain telah diterima.
-                    Subdomain lama telah dinonaktifkan dan subdomain baru telah
-                    dicatat sebagai subdomain aktif.
+                    <i class="bi bi-check-circle-fill"></i>
+                    <span>
+                        Permohonan perubahan nama subdomain telah diterima.
+                        Subdomain lama dinonaktifkan sesuai proses sistem dan
+                        perubahan nama subdomain telah diproses.
+                    </span>
                 </div>
 
             @elseif ($permohonan->status === 'ditolak')
 
-                <div class="decision-info">
+                <div class="decision-info rejection-info">
                     <i class="bi bi-info-circle"></i>
-                    Permohonan perubahan nama subdomain telah ditolak.
-                    Alasan penolakan sudah tercatat dalam sistem.
+                    <span>
+                        Permohonan perubahan nama subdomain telah ditolak.
+                        Alasan penolakan sudah tercatat dalam sistem.
+                    </span>
                 </div>
 
             @endif
 
-            {{-- UNDUH SURAT: HANYA UNTUK PERMOHONAN DITERIMA --}}
+            {{-- UNDUH SURAT TINDAK LANJUT --}}
             @if ($permohonan->status === 'diterima')
 
                 <div style="margin-top: 20px;">
@@ -735,9 +1104,11 @@
                     @else
 
                         <div class="decision-info">
-                            <i class="bi bi-exclamation-circle"></i>
-                            Permohonan telah diterima, tetapi surat tindak lanjut
-                            belum ditemukan. Silakan periksa proses pembuatan surat.
+                            <i class="bi bi-info-circle"></i>
+                            <span>
+                                Permohonan telah diterima, tetapi surat tindak lanjut
+                                belum tersedia. Silakan periksa proses pembuatan surat.
+                            </span>
                         </div>
 
                     @endif
@@ -749,8 +1120,10 @@
                 <div style="margin-top: 20px;">
                     <div class="decision-info">
                         <i class="bi bi-info-circle"></i>
-                        Permohonan yang ditolak tidak diterbitkan surat tindak lanjut PDF.
-                        Alasan penolakan dapat dilihat pada informasi permohonan.
+                        <span>
+                            Permohonan yang ditolak tidak memerlukan surat tindak lanjut.
+                            Alasan penolakan dapat dilihat pada informasi permohonan.
+                        </span>
                     </div>
                 </div>
 
@@ -758,6 +1131,7 @@
 
         </section>
 
+        {{-- KEMBALI --}}
         <a
             href="{{ route('petugas.perubahan') }}"
             class="button button-back"
