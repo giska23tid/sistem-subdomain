@@ -402,26 +402,137 @@
             font-size: 35px;
         }
 
-        /* PAGINATION */
+        /* ==============================
+        PAGINATION
+        ============================== */
+
         .pagination-wrapper {
-            margin-top: 20px;
+            width: 100%;
+            margin-top: 24px;
             color: #718096;
             font-size: 12px;
         }
 
         .pagination-wrapper nav {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 14px !important;
         }
 
+        /* Sembunyikan navigasi mobile yang hanya berisi Previous dan Next */
+        .pagination-wrapper nav > div:first-child {
+            display: none !important;
+        }
+
+        /* Tampilkan navigasi desktop */
         .pagination-wrapper nav > div:last-child {
-            margin-top: 0;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: center !important;
+            width: 100%;
+            gap: 14px !important;
+            margin: 0 !important;
         }
 
-        .pagination-wrapper a,
-        .pagination-wrapper span {
+        /* Informasi jumlah data */
+        .pagination-wrapper nav > div:last-child > div:first-child {
+            order: 2;
+            text-align: center !important;
+            margin: 0 !important;
+        }
+
+        /* Area tombol halaman */
+        .pagination-wrapper nav > div:last-child > div:last-child {
+            order: 1;
+            display: flex !important;
+            justify-content: center !important;
+            align-items: center !important;
+            width: 100%;
+            margin: 0 !important;
+        }
+
+        /* Kelompok nomor halaman dan navigasi */
+        .pagination-wrapper nav > div:last-child > div:last-child > span {
+            display: inline-flex !important;
+            flex-direction: row !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 6px !important;
+            flex-wrap: wrap;
+        }
+
+        /* Tombol Previous, Next, dan nomor halaman */
+        .pagination-wrapper nav a,
+        .pagination-wrapper nav span[aria-current="page"] span,
+        .pagination-wrapper nav span[aria-disabled="true"] span {
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            min-width: 38px;
+            min-height: 38px;
+            padding: 8px 12px !important;
+            border: 1px solid #dce5ef !important;
+            border-radius: 8px !important;
+            background: #ffffff !important;
+            color: #52647b !important;
+            font-size: 12px !important;
+            font-weight: 600 !important;
+            text-decoration: none !important;
+            white-space: nowrap;
+            transition: all .2s ease;
+        }
+
+        /* Efek hover */
+        .pagination-wrapper nav a:hover {
+            background: #eaf4fd !important;
+            border-color: #1769a6 !important;
+            color: #1769a6 !important;
+        }
+
+        /* Nomor halaman aktif */
+        .pagination-wrapper nav span[aria-current="page"] span {
+            background: #1769a6 !important;
+            border-color: #1769a6 !important;
+            color: #ffffff !important;
+        }
+
+        /* Tombol navigasi yang tidak aktif */
+        .pagination-wrapper nav span[aria-disabled="true"] span {
+            background: #f3f6fb !important;
+            color: #a0aec0 !important;
+            cursor: not-allowed;
+        }
+
+        /* Ukuran ikon panah */
+        .pagination-wrapper svg {
+            width: 15px !important;
+            height: 15px !important;
+            max-width: 15px !important;
+            max-height: 15px !important;
+            display: inline-block !important;
+            vertical-align: middle;
+        }
+
+        /* Informasi jumlah data */
+        .pagination-wrapper nav p {
+            margin: 0 !important;
+            text-align: center !important;
+            color: #718096;
             font-size: 12px;
+        }
+
+        /* Responsif */
+        @media (max-width: 760px) {
+            .pagination-wrapper nav > div:last-child {
+                display: flex !important;
+            }
+
+            .pagination-wrapper nav > div:last-child > div:last-child {
+                flex-wrap: wrap;
+            }
         }
 
         /* MODAL */
